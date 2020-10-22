@@ -1,0 +1,24 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Result For This Round
+{% endblock %}
+
+{% block content %}
+<p>
+Current round number: {{ player.round_number }}
+</p>
+<p>
+The payment for your first decision is {{ payment_baseline }}.
+</p>
+<p>
+The payment for your second decision, which is after observing the first draw, is {{ payment_signal1 }}.
+</p>
+<p>
+The payment for your third decision, which is after observing the second draw, is {{ payment_signal2 }}.
+</p>
+ Dice in this round is {{ dice }}, so, the following is your final payment in this round: {{ payment_thisrun }}
+</p>
+    {% next_button %}
+{% endblock %}

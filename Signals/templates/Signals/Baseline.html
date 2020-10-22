@@ -1,0 +1,28 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Baseline
+{% endblock %}
+
+{% block content %}
+<p>
+Current round number: {{ player.round_number }}
+</p>
+<img src="{% static "Non_Bayesian_Game_Prob_Elicit/NonBayesianPic.jpg" %}"/>
+<p>
+For now, you own this lottery. The computer has thrown a coin and determined the true
+value of the lottery. But you don't know anything about this lottery other than it either takes the
+value of 100 or 0 with equal probability.
+</p>
+
+<p>
+In the following box, please enter the "chances out of 100" that the true value of the lottery is 100.
+</p>
+{% formfields%}
+<p>
+Note: It is in your BEST interest to state your TRUE value.
+</p>
+    {% next_button %}
+
+{% endblock %}

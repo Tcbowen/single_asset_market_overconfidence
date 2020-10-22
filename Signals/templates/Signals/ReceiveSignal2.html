@@ -1,0 +1,34 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Second Draw
+{% endblock %}
+
+{% block content %}
+<p>
+Current round number: {{ player.round_number }}
+</p>
+<img src="{% static "Non_Bayesian_Game_Prob_Elicit/NonBayesianPic.jpg" %}"/>
+<p>
+
+  To help you further "guess" the true value of the lottery, the computer is drawing
+  another 10 balls in the same bag.
+</p>
+
+<p>
+  In those 10 balls that just drawn, they contain {{ signal2black }} black balls and {{ signal2white }} white balls.
+</p>
+
+<img src="{{img_url}}"/>
+
+<p>
+  Again, please enter the "chances out of 100" that the true value of the lottery is 100.
+</p>
+{% formfields%}
+<p>
+Note: It is in your BEST interest to state your TRUE value.
+</p>
+    {% next_button %}
+
+{% endblock %}

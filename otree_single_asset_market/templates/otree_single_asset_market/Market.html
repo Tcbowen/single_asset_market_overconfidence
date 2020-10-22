@@ -1,0 +1,32 @@
+{% extends "otree_markets/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Market
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="module" src="/static/otree_single_asset_market/single_asset_text_interface.js"></script>
+    <script type="module" src="/static/otree_markets/disable_interface_overlay.js"></script>
+{% endblock %}
+
+{% block content %}
+
+</p>
+<img src="{{img_sig_url}}"/>
+<p>
+
+  The computer drew two balls from the bag that correspond to the true state of the world, and the two balls are.   
+
+<br> {{ signal1black }} black balls and {{ signal1white }} white balls.
+</p>
+
+<img src="{{img_url}}"/>
+
+    <disable-interface-overlay
+    ></disable-interface-overlay>
+
+    <single-asset-text-interface></single-asset-text-interface>
+
+{% endblock %}

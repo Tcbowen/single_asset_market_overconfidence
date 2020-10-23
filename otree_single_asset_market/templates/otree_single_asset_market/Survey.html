@@ -1,0 +1,24 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block title %}
+    Survey
+{% endblock %}
+
+{% block content %}
+
+</p>
+<img src="{{img_sig_url}}"/>
+your private signal
+
+<br> {{ signal1black }} black balls and {{ signal1white }} white balls.
+</p>
+<p>
+<img src="{{img_url}}"/>
+</p>
+
+	{% formfields %}
+
+    {% next_button %}
+
+{% endblock %}

@@ -46,10 +46,10 @@ class Survey(Page):
             }
 
     form_model = 'player'
-    form_fields = ['Question_1', 'Question_2', 'Question_3']
+    form_fields = ['Question_1', 'Question_2_low','Question_2_hi', 'Question_3']
 
 class Wait(WaitPage):
-    pass
+    after_all_players_arrive = 'set_total_payoff'
 
 
 page_sequence = [Market, Survey, Wait]

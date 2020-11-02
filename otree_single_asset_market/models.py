@@ -13,6 +13,9 @@ class Constants(BaseConstants):
     name_in_url = 'otree_single_asset_market'
     players_per_group = None
     num_rounds = 20 
+    ## sets the signal naure for env a
+    signal = 0
+    ## sets the trading env (0=a, 1=b and c)
     env = 1
 
 
@@ -35,30 +38,43 @@ class Subsession(markets_models.Subsession):
     
     def allow_short(self):
         return self.config.allow_short
+
     def set_signal(self, player, sig):
         player.signal_nature = sig
 
-    def creating_session(self):
-        ##################################
-        #signal code
-        ##################################
-        sig = 0
+    def set_payoffs(self):
         for player in self.get_players():
-            ## set the world state good or bad at probabilty of .5
-            world_state_binomial = np.random.binomial(1, 0.5)
+            player.set_profit()
+        ############
+        ##sort profit to get ranking 
+        rank = []
+        for player in self.get_players():
+            rank.append(player)
+        rank.sort(reverse = True, key = lambda x: x.profit)
+        n=1
+        for r in rank:
+            r.ranking = n
+            n=n+1
+        ####################
+        for p in self.get_players():
+            p.set_total_payoff()
+    def creating_session(self):
+        ## world state (0=bad, 1=good)
+        sig = Constants.signal
+        ## set the global world state
+        world_state_binomial = np.random.binomial(1, 0.5)
+        for player in self.get_players():
+            ## set the world state for each player equal to the global state
             player.world_state = world_state_binomial
             ## set signal 
             if Constants.env == 0:
             ## env a ## 1==hi, 0==low
                 self.set_signal(player, sig)
-            ## env b #### ##################### not 50/50 just random. is this correct
+           ## sets the signal for env b and c
             elif Constants.env == 1:
                 sig = np.random.randint(0,high = 2)
                 self.set_signal(player,sig)
-            else:
-                ## env c
-                sig = np.random.randint(0,high = 2)
-                self.set_signal(player,sig)
+            ### sets the diplay each player 
             ##good state
             if player.world_state == 1:
                 if player.signal_nature==1:
@@ -80,18 +96,15 @@ class Subsession(markets_models.Subsession):
             player.signal1_black = np.random.binomial(2,signal1_blackballs/5) 
             ## white balles = 2-black
             player.signal1_white = 2-player.signal1_black
+        ## create market sesssion
         if self.round_number > self.config.num_rounds:
             return
         return super().creating_session()
 
 
 class Group(markets_models.Group):
-
-    def set_total_payoff(self):
-        for p in self.get_players():
-            p.set_total_payoff()
-
-
+     pass
+        
 class Player(markets_models.Player):
 
     def asset_endowment(self):
@@ -100,7 +113,7 @@ class Player(markets_models.Player):
     def cash_endowment(self):
         return self.subsession.config.cash_endowment
 
-## Bayes
+## Bayes methods
     def BU_hi(self, k, m ):
         return (math.pow(0.6,k) + math.pow(.4,m))/((math.pow(.6,k) + math.pow(.4,m)) +(math.pow(.4,k) + math.pow(.6,m)))
     def BU_low(self, k, m ):
@@ -109,12 +122,15 @@ class Player(markets_models.Player):
         return (((math.pow(0.6,l) * math.pow(.4,8-l)) + (math.pow(.8,h)*math.pow(.2,8-h)))/(((math.pow(.6,l)*math.pow(.4,8-l)*math.pow(.8,h)*math.pow(.2,8-h)) +(math.pow(.4,l)*math.pow(.6,8-l)*math.pow(.2,h)*math.pow(.4,8-h)))))
 
 ## Variables 
+    ranking = models.IntegerField()
+    profit = models.IntegerField()
     total_payoff = models.IntegerField()
     payment_signal1 = models.IntegerField()
     world_state = models.IntegerField()
     signal1_black = models.IntegerField()
     signal1_white = models.IntegerField()
     signal_nature = models.IntegerField()
+
 
 ## Questions 
     Question_1 = models.IntegerField(
@@ -149,20 +165,31 @@ class Player(markets_models.Player):
         ranking of your profit in this period. Please choose one of the following. 
         '''
     )
+
+    def set_profit(self):
+        shares = list(self.settled_assets.values())[0]
+        if self.world_state==1:
+            self.profit = shares*300 - self.settled_cash
+             ## bad state
+        else:
+           self.profit =shares*100 - self.settled_cash
+        ### return the ranking of a player and set ranking
+    def get_profit(self):
+        return self.profit
+
     def set_total_payoff(self):
-        Question_1_payoff = models.IntegerField()
-        Question_2_payoff = models.IntegerField() 
-        Question_2_payoff = models.IntegerField()
-        ## question 1
+        ## question 1#######################################
+
         p_n = random.randint(0,99)
-        n_asset = models.IntegerField()
+        n_asset = 0
         if self.Question_1>p_n:
             n_asset = 300
         else:
             n_asset = 100
         Question_1_payoff = n_asset
 
-        #####Question 2
+        #####Question 2#################################
+
         L = self.Question_2_low
         U = self.Question_2_hi
         if Constants.env>0:
@@ -179,22 +206,33 @@ class Player(markets_models.Player):
         else:
             Question_2_payoff= 0
 
-        ### question 3
+        ### question 3###################################
+
         ##C correct ranking
-        C=0
-        ##R is the real ranking 
-        R=0
+        C = self.ranking
+        ##R is the reported belief
+        R = self.Question_3
         Question_3_payoff =0
-        #Question_3_payoff= 1.2 – (1/50)(C – R)^2
+        Question_3_payoff= (1.2 - (1/50)*(math.pow((C - R),2)))
 
-        ##payoff from assets
-        payoff_from_assets = models.IntegerField()
-        payoff_from_assets = 0
+        ##payoff from assets#############################################
 
-        ##+experimental points 
-        ##-cost of shares 
-        ##proceeds 
-        ##the final value of portfolio 
+        payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
 
+        ##final portfolio value########################################
 
-        self.total_payoff = (Question_1_payoff + Question_2_payoff +Question_3_payoff)/3 + payoff_from_assets
+        shares = list(self.settled_assets.values())[0]
+
+        if self.world_state == 1:
+            multiplier =300
+        else:
+            multiplier =100
+        ##number of shares * multiplier 
+        portfolio_value = shares*multiplier
+
+        ## payoff_from_assets#############################
+        payoff_from_assets = payoff_from_assets + portfolio_value
+
+        ## set total payoff ###############################
+        
+        self.total_payoff = (int)((Question_1_payoff + Question_2_payoff +Question_3_payoff)/3) + payoff_from_assets

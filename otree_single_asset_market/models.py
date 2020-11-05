@@ -212,7 +212,6 @@ class Player(markets_models.Player):
         C = self.ranking
         ##R is the reported belief
         R = self.Question_3
-        Question_3_payoff =0
         Question_3_payoff= (1.2 - (1/50)*(math.pow((C - R),2)))
 
         ##payoff from assets#############################################

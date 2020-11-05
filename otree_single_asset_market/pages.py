@@ -26,7 +26,10 @@ class Market(BaseMarketPage):
         }
 
 class Survey(Page):
-	timeout_seconds = 30
+    timeout_seconds = 30
+    def before_next_page(self):
+        if self.timeout_happened:
+            self.player.save()
     def vars_for_template(self):
             ##load signal
             def before_next_page(self):
@@ -42,7 +45,7 @@ class Survey(Page):
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,
-                'profit': self.profit
+                'profit':self.profit,
                 'img_url': img_url,
                 'img_sig_url': img_sig_url,
             }
@@ -51,7 +54,9 @@ class Survey(Page):
     form_fields = ['Question_1', 'Question_2_low','Question_2_hi', 'Question_3']
 
 class Wait(WaitPage):
-    after_all_players_arrive = 'set_total_payoff'
+    wait_for_all_groups = True
+    
+    after_all_players_arrive = 'set_payoffs'
 
 
 page_sequence = [Market, Survey, Wait]

@@ -24,6 +24,10 @@ class Market(BaseMarketPage):
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
+class set_profits(WaitPage):
+    wait_for_all_groups = True
+    
+    after_all_players_arrive = 'set_profits'
 
 class Survey(Page):
     timeout_seconds = 30
@@ -45,7 +49,7 @@ class Survey(Page):
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,
-                'profit':self.profit,
+                'profit':self.player.profit,
                 'img_url': img_url,
                 'img_sig_url': img_sig_url,
             }
@@ -59,4 +63,4 @@ class Wait(WaitPage):
     after_all_players_arrive = 'set_payoffs'
 
 
-page_sequence = [Market, Survey, Wait]
+page_sequence = [Market,set_profits, Survey, Wait]

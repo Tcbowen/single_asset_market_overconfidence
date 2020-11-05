@@ -42,6 +42,7 @@ class Survey(Page):
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,
+                'profit': self.profit
                 'img_url': img_url,
                 'img_sig_url': img_sig_url,
             }

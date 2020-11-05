@@ -4,23 +4,36 @@
 {% block title %}
     Survey
 {% endblock %}
-
+{% block styles %}
+<style>
+.signal {
+	float: right;
+	width: 30%;
+}
+.forms {
+ 	float: left;
+	width: 70%;
+}
+</style>
+</head>
+{% endblock %} 
 {% block content %}
-
-</p>
+<body>
+<div class = "signal">
 <img src="{{img_sig_url}}"/>
-your private signal
+<br>your private signal</br>
 
-your toral profit {{profit}}
-
-<br> {{ signal1black }} black balls and {{ signal1white }} white balls.
-</p>
-<p>
+<br> {{ signal1black }} black balls and {{ signal1white }} white balls.</br>
+<br>
 <img src="{{img_url}}"/>
-</p>
+</br>
 
+<br> your total profit is {{ profit }} </br> 
+</div>
+<div = class="forms"> 
 	{% formfields %}
 
     {% next_button %}
-
+</div>
+</body>
 {% endblock %}

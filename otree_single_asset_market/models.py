@@ -41,10 +41,10 @@ class Subsession(markets_models.Subsession):
 
     def set_signal(self, player, sig):
         player.signal_nature = sig
-
-    def set_payoffs(self):
-        for player in self.get_players():
+    def set_profits(self):
+         for player in self.get_players():
             player.set_profit()
+    def set_payoffs(self):
         ############
         ##sort profit to get ranking 
         rank = []

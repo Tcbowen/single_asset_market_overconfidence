@@ -10,7 +10,7 @@ import numpy as np
 import math
 
 class Constants(BaseConstants):
-    name_in_url = 'otree_single_asset_market'
+    name_in_url = 'single_asset_market_overconfidence'
     players_per_group = None
     num_rounds = 20 
     ## sets the signal naure for env a

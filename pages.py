@@ -14,10 +14,10 @@ class Market(BaseMarketPage):
     def vars_for_template(self):
         ##load signal
         img_sig_url = static(
-            'otree_single_asset_market/signal_{}.jpg'.format(self.player.signal_nature))
+            'single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature))
         ## load balls
         img_url = static(
-            'otree_single_asset_market/balls2/balls_{}.jpg'.format(self.player.signal1_black))
+            'single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black))
         return {
             'signal1black': self.player.signal1_black,
             'signal1white': self.player.signal1_white,

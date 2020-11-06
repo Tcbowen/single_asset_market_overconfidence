@@ -4,27 +4,26 @@
 {% block title %}
     Market
 {% endblock %}
+
 {% block scripts %}
-	    <script type="module" src="/static/otree_single_asset_market/single_asset_text_interface.js"></script>
+	    <script type="module" src="/static/single_asset_market_overconfidence/single_asset_text_interface.js"></script>
 	    <script type="module" src="/static/otree_markets/disable_interface_overlay.js"></script>
 {% endblock %}
-<html>
-<head>
+
 {% block styles %}
-<style>
-.market {
-	float: left;
-	width: 70%;
-}
-.signal {
- 	float: left;
-	width: 30%;
-}
-</style>
-</head>
+	<style>
+		.market {
+			float: left;
+			width: 70%;
+		}
+		.signal {
+			float: left;
+			width: 30%;
+		}
+	</style>
 {% endblock %} 
+
 {% block content %}
-<body>
 	<div class="market">
 			<disable-interface-overlay> 
     		</disable-interface-overlay>
@@ -40,7 +39,4 @@
 			</p>
 			
 	</div>
-
-</body>
-</html>
 {% endblock %}

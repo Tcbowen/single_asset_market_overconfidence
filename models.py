@@ -219,10 +219,10 @@ class Player(markets_models.Player):
     def set_profit(self):
         shares = list(self.settled_assets.values())[0]
         if self.world_state==1:
-            self.profit =  (self.subsession.config.cash_endowment - self.settled_cash) + (self.subsession.config.asset_endowment*300 - shares*300)
+            self.profit =  shares*300 - (self.subsession.config.cash_endowment - self.settled_cash)
              ## bad state
         else:
-           self.profit = (self.subsession.config.cash_endowment - self.settled_cash) +  (self.subsession.config.asset_endowment*100 - shares*100)
+           self.profit =  shares*100 - (self.subsession.config.cash_endowment - self.settled_cash) 
         ### return the ranking of a player and set ranking
     def get_profit(self):
         return self.profit

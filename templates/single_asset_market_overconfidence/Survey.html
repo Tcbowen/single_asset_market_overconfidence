@@ -9,6 +9,7 @@
 .signal {
 	float: right;
 	width: 30%;
+	text-align: center;
 }
 .forms {
  	float: left;
@@ -21,14 +22,16 @@
 <body>
 <div class = "signal">
 <img src="{{img_sig_url}}"/>
-<br>your private signal</br>
+<b>
+<br>Your private signal</br>
 
-<br> {{ signal1black }} black balls and {{ signal1white }} white balls.</br>
+<br style="font-size:300%"> {{ signal1black }} Black Balls and {{ signal1white }} White Balls.</br>
 <br>
 <img src="{{img_url}}"/>
 </br>
 
-<br> your total profit is {{ profit }} </br> 
+<br> Your total profit is {{ profit }} </br>
+</b>
 </div>
 <div = class="forms"> 
 	{% formfields %}

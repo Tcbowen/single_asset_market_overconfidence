@@ -118,7 +118,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 <div>
                     <h3>Asks</h3>
                     <div class="order-info-header">
-                        Volume / Price
+                        Price / Volume
                     </div>
                     <order-list
                         class="flex-fill"

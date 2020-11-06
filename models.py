@@ -2,6 +2,7 @@ from otree.api import (
     models, BaseConstants
 )
 from otree_markets import models as markets_models
+from otree_markets.exchange.base import Order, OrderStatusEnum
 from .configmanager import ConfigManager
 
 import random
@@ -103,9 +104,36 @@ class Subsession(markets_models.Subsession):
 
 
 class Group(markets_models.Group):
-     pass
-        
+
+    def confirm_enter(self, order):
+        exchange = order.exchange
+        try:
+            # query for active orders in the same exchange as the new order, from the same player
+            old_order = (
+                exchange.orders
+                    .filter(pcode=order.pcode, is_bid=order.is_bid, status=OrderStatusEnum.ACTIVE)
+                    .exclude(id=order.id)
+                    .get()
+            )
+        except Order.DoesNotExist: 
+            pass
+        else:
+            # if another order exists, cancel it
+            exchange.cancel_order(old_order.id)
+
+        super().confirm_enter(order)
+
 class Player(markets_models.Player):
+
+    def check_available(self, is_bid, price, volume, asset_name):
+        '''instead of checking available assets, just check settled assets since there can
+        only ever be one bid/ask on the market from each player
+        '''
+        if is_bid and self.settled_cash < price * volume:
+            return False
+        elif not is_bid and self.settled_assets[asset_name] < volume:
+            return False
+        return True
 
     def asset_endowment(self):
         return self.subsession.config.asset_endowment

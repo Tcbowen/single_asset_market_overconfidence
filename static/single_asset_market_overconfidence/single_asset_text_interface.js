@@ -63,6 +63,11 @@ class SingleAssetTextInterface extends PolymerElement {
                 order-list, trade-list, event-log {
                     border: 1px solid black;
                 }
+
+                .order-info-header {
+                    text-align: center;
+                    padding-bottom: 2px;
+                }
             </style>
 
             <simple-modal
@@ -88,8 +93,12 @@ class SingleAssetTextInterface extends PolymerElement {
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
+                    <div class="order-info-header">
+                        Price / Volume
+                    </div>
                     <order-list
                         class="flex-fill"
+                        display-format="[[ orderFormatter ]]"
                         orders="[[bids]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
@@ -97,15 +106,23 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
                 <div>
                     <h3>Trades</h3>
+                    <div class="order-info-header">
+                        Price / Volume
+                    </div>
                     <trade-list
                         class="flex-fill"
+                        display-format="[[ tradeFormatter ]]"
                         trades="[[trades]]"
                     ></trade-list>
                 </div>
                 <div>
                     <h3>Asks</h3>
+                    <div class="order-info-header">
+                        Price / Volume
+                    </div>
                     <order-list
                         class="flex-fill"
+                        display-format="[[ orderFormatter ]]"
                         orders="[[asks]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
@@ -137,6 +154,12 @@ class SingleAssetTextInterface extends PolymerElement {
     ready() {
         super.ready();
         this.pcode = this.$.constants.participantCode;
+        this.orderFormatter = order => {
+            return `${order.price} / ${order.volume}`
+        }
+        this.tradeFormatter = trade => {
+            return `${trade.taking_order.price} / ${trade.taking_order.traded_volume}`;
+        };
     }
 
     // triggered when this player enters an order

@@ -1,5 +1,6 @@
 from otree_markets.pages import BaseMarketPage
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib.s
+taticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
 class Market(BaseMarketPage):
@@ -13,11 +14,9 @@ class Market(BaseMarketPage):
 
     def vars_for_template(self):
         ##load signal
-        img_sig_url = static(
-            'single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature))
+        img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
         ## load balls
-        img_url = static(
-            'single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black))
+        img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
         return {
             'signal1black': self.player.signal1_black,
             'signal1white': self.player.signal1_white,
@@ -41,11 +40,17 @@ class Survey(Page):
             #def is_displayed(self):
               #  return self.round_number <= self.subsession.config.num_rounds
 
+<<<<<<< HEAD
             img_sig_url = static(
                 'single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature))
             ## load balls
             img_url = static(
                 'single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black))
+=======
+            img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
+            ## load balls
+            img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
+>>>>>>> origin/morgan
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,

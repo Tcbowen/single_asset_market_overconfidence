@@ -46,10 +46,8 @@ class OrderEnterWidget extends PolymerElement {
                     <div>
                         <h4>Your Allocation</h4>
                     </div>
-                    <div>Available Cash: $[[availableCash]]</div>
-                    <div>Settled Cash: $[[settledCash]]</div>
-                    <div>Available Assets: [[availableAssets]]</div>
-                    <div>Settled Assets: [[settledAssets]]</div>
+                    <div>Your Experimental Points: [[settledCash]]</div>
+                    <div>Your Assets: [[settledAssets]]</div>
                 </div>
                 <div id="order-input">
                     <h4>Submit an Order</h4>

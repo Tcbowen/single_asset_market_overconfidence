@@ -188,7 +188,8 @@ class Player(markets_models.Player):
         this trading period. Please use the infromation to the right hand side to answer the 
         following question truthfully. 
 
-        \nWhat is the probailty( out of 100) that you believe the true state is 'G'?
+        What is the probailty( out of 100) that you believe the true state is 'G'?
+
         Your answer:'''
     )
 
@@ -198,19 +199,19 @@ class Player(markets_models.Player):
         prediction of the true state is 'G' falls into. Again please answer the queastion
         truthfully.
 
-        \nyour answer:
+        your answer:
 
-        \n(low)
+        (low)
         '''
     )
     Question_2_hi = models.IntegerField(label='''
-        \n (hi):
+        (hi):
         ''')
 
     Question_3 = models.IntegerField(
     	choices=[1,2,3,4,5,6,7,8],
         label='''
-        \nHow would you rank your own performance in this trading period? in another worlds, what is the beleive of your own
+        How would you rank your own performance in this trading period? in another worlds, what is the beleive of your own
         ranking of your profit in this period. Please choose one of the following. 
         '''
     )

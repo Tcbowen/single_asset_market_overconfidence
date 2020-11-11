@@ -265,7 +265,7 @@ class Player(markets_models.Player):
         Question_3_payoff= (1.2 - (1/50)*(math.pow((C - R),2)))
 
         ##payoff from assets#############################################
-
+        ## 10,000 - cost of shares pruchased + procceds from sales
         payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
 
         ##final portfolio value########################################
@@ -277,9 +277,11 @@ class Player(markets_models.Player):
         else:
             multiplier =100
         ##number of shares * multiplier 
+
         portfolio_value = shares*multiplier
 
         ## payoff_from_assets#############################
+        ### adds cash to the values of shares purchased 
         payoff_from_assets = payoff_from_assets + portfolio_value
 
         ## set total payoff ###############################

@@ -231,12 +231,12 @@ class Player(markets_models.Player):
         ## question 1#######################################
 
         p_n = random.randint(0,99)
-        n_asset = 0
+        n_asset_binomail = np.random.binomial(1, p_n/100)
+        n_asset_value = n_asset_binomail*200 +100
         if self.Question_1>p_n:
-            n_asset = 300
+            Question_1_payoff = self.world_state*200 +100
         else:
-            n_asset = 100
-        Question_1_payoff = n_asset
+            Question_1_payoff = n_asset_value
 
         #####Question 2#################################
 

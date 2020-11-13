@@ -7,17 +7,16 @@ from .configmanager import ConfigManager
 
 import random
 import numpy
+import itertools
 import numpy as np
 import math
 
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
-    players_per_group = None
+    players_per_group = 1
     num_rounds = 20 
-    ## sets the signal naure for env a
-    signal = 0
     ## sets the trading env (0=a, 1=b and c)
-    env = 1
+    env = 0
 
 
     # the columns of the config CSV and their types
@@ -40,8 +39,17 @@ class Subsession(markets_models.Subsession):
     def allow_short(self):
         return self.config.allow_short
 
-    def set_signal(self, player, sig):
-        player.signal_nature = sig
+    def set_signal(self, env):
+    	if env == 0:
+    		sig = random.choice([0, 1])## ramdomly chooses low or high for the round
+    		for p in self.get_players():
+    			p.signal_nature = sig
+    	else:
+    		sig = itertools.cycle([0, 1])
+    		for g in self.get_groups():
+    			signal = next(sig)
+    			for p in g.get_players():
+    				p.signal_nature = signal
     def set_profits(self):
          for player in self.get_players():
             player.set_profit()
@@ -61,27 +69,19 @@ class Subsession(markets_models.Subsession):
             p.set_total_payoff()
     def creating_session(self):
         ## world state (0=bad, 1=good)
-        sig = Constants.signal
         ## set the global world state
-        world_state_binomial = np.random.binomial(1, 0.5)
+        world_state_binomial = np.random.binomial(1, 0.5) 
+        ## set signal 
+        self.group_randomly()
+        self.set_signal(Constants.env)
         for player in self.get_players():
             ## set the world state for each player equal to the global state
-            player.world_state = world_state_binomial
-            ## set signal 
-            if Constants.env == 0:
-            ## env a ## 1==hi, 0==low
-                self.set_signal(player, sig)
-           ## sets the signal for env b and c
-            elif Constants.env == 1:
-                sig = np.random.randint(0,high = 2)
-                self.set_signal(player,sig)
-            ### sets the diplay each player 
+            player.world_state = world_state_binomial 
             ##good state
             if player.world_state == 1:
                 if player.signal_nature==1:
                     ##hi = 4 black
                     signal1_blackballs = 4
-                    
                 else:  
                     ##low = 2 black
                     signal1_blackballs = 3               

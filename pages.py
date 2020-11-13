@@ -56,6 +56,21 @@ class Wait(WaitPage):
     wait_for_all_groups = True
     
     after_all_players_arrive = 'set_payoffs'
+    
+class Results(Page):
+    timeout_seconds = 15
+    def before_next_page(self):
+        if self.timeout_happened:
+            self.player.save()
+    def vars_for_template(self): 
+        return {
+            'profit': self.player.profit,
+            'Question_1_pay': self.player.Question_1_payoff,
+            'Question_2_pay': self.player.Question_2_payoff,
+            'Question_3_pay': self.player.Question_3_payoff,
+            'total_pay':self.player.total_payoff,
+            'asset_pay': self.player.payoff_from_assets 
+        }
 
 
-page_sequence = [Market,set_profits, Survey, Wait]
+page_sequence = [Market,set_profits, Survey, Wait, Results]

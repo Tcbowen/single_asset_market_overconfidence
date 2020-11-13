@@ -13,7 +13,7 @@ import math
 
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
-    players_per_group = 1
+    players_per_group = None
     num_rounds = 20 
     ## sets the trading env (0=a, 1=b and c)
     env = 0
@@ -216,6 +216,10 @@ class Player(markets_models.Player):
     total_white = models.IntegerField()
     total_black_low = models.IntegerField()
     total_black_high = models.IntegerField()
+    Question_1_payoff = models.IntegerField()
+    Question_2_payoff = models.IntegerField()
+    Question_3_payoff = models.IntegerField()
+    payoff_from_assets = models.IntegerField()
 ## Questions 
     Question_1 = models.IntegerField(
         label='''
@@ -269,9 +273,9 @@ class Player(markets_models.Player):
         n_asset_binomail = np.random.binomial(1, p_n/100)
         n_asset_value = n_asset_binomail*200 +100
         if self.Question_1>p_n:
-            Question_1_payoff = self.world_state*200 +100
+            self.Question_1_payoff = self.world_state*200 +100
         else:
-            Question_1_payoff = n_asset_value
+            self.Question_1_payoff = n_asset_value
 
         #####Question 2#################################
         L = self.Question_2_low
@@ -285,9 +289,9 @@ class Player(markets_models.Player):
             else:
                 BU = (int) (self.BU_low(self.total_black, self.total_white))
         if BU>L and BU<U:
-            Question_2_payoff= (1-(U-L))
+            self.Question_2_payoff= (1-(U-L))
         else:
-            Question_2_payoff= 0
+            self.Question_2_payoff= 0
 
         ### question 3###################################
 
@@ -295,11 +299,11 @@ class Player(markets_models.Player):
         C = self.ranking
         ##R is the reported belief
         R = self.Question_3
-        Question_3_payoff= (1.2 - (1/50)*(math.pow((C - R),2)))
+        self.Question_3_payoff= (int) (1.2 - (1/50)*(math.pow((C - R),2)))
 
         ##payoff from assets#############################################
         ## 10,000 - cost of shares pruchased + procceds from sales
-        payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
+        self.payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
 
         ##final portfolio value########################################
 
@@ -315,8 +319,8 @@ class Player(markets_models.Player):
 
         ## payoff_from_assets#############################
         ### adds cash to the values of shares purchased 
-        payoff_from_assets = payoff_from_assets + portfolio_value
+        self.payoff_from_assets = self.payoff_from_assets + portfolio_value
 
         ## set total payoff ###############################
         
-        self.total_payoff = (int)((Question_1_payoff + Question_2_payoff +Question_3_payoff)/3) + payoff_from_assets
+        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.payoff_from_assets

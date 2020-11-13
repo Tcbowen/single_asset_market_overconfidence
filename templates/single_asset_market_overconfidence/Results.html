@@ -1,0 +1,25 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Your Results 
+{% endblock %}
+{% block content %}
+<br>
+your profits: {{profit}}
+</br>
+<br>
+payoff from Question 1: {{Question_1_pay}}
+</br>
+<br>
+payoff from Question 2: {{Question_2_pay}}
+</br>
+<br>
+payoff from Question 3: {{Question_2_pay}}
+</br>
+<br>
+payoff from Assets: {{asset_pay}}
+</br>
+<br>
+total payoff for this period: {{total_pay}}
+</br>
+{% endblock %}

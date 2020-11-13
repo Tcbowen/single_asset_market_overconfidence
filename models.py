@@ -16,7 +16,7 @@ class Constants(BaseConstants):
     players_per_group = None
     num_rounds = 20 
     ## sets the trading env (0=a, 1=b and c)
-    env = 0
+    env = 1
 
 
     # the columns of the config CSV and their types
@@ -40,16 +40,16 @@ class Subsession(markets_models.Subsession):
         return self.config.allow_short
 
     def set_signal(self, env):
-    	if env == 0:
-    		sig = random.choice([0, 1])## ramdomly chooses low or high for the round
-    		for p in self.get_players():
-    			p.signal_nature = sig
-    	else:
-    		sig = itertools.cycle([0, 1])
-    		for g in self.get_groups():
-    			signal = next(sig)
-    			for p in g.get_players():
-    				p.signal_nature = signal
+        if env == 0:
+            sig = random.choice([0, 1])## ramdomly chooses low or high for the round
+            for p in self.get_players():
+                p.signal_nature = sig
+        else:
+            sig = itertools.cycle([0, 1])
+            for g in self.get_groups():
+                signal = next(sig)
+                for p in g.get_players():
+                    p.signal_nature = signal
     def set_profits(self):
          for player in self.get_players():
             player.set_profit()
@@ -68,33 +68,39 @@ class Subsession(markets_models.Subsession):
         for p in self.get_players():
             p.set_total_payoff()
     def get_black_balls(self):
-    	total_black =0
-    	for p in self.get_players():
-    		total_black = total_black+p.signal1_black
-    	return total_black
+        total_black =0
+        for p in self.get_players():
+            total_black = total_black+p.signal1_black
+        return total_black
     def get_white_balls(self):
-    	total_white =0
-    	for p in self.get_players():
-    		total_white = total_white+p.signal1_white
-    	return total_white
+        total_white =0
+        for p in self.get_players():
+            total_white = total_white+p.signal1_white
+        return total_white
     def get_black_balls_low(self):
-    	total_black =0
-    	for p in self.get_players():
-    		if p.signal_nature==0:
-    				total_black = total_black + p.signal1_black
-    	return total_black
+        total_black =0
+        for p in self.get_players():
+            if p.signal_nature==0:
+                    total_black = total_black + p.signal1_black
+        return total_black
     def get_black_balls_high(self):
-    	total_black =0
-    	for p in self.get_players():
-    		if p.signal_nature==1:
-    				total_black = total_black + p.signal1_black
-    	return total_black
+        total_black =0
+        for p in self.get_players():
+            if p.signal_nature==1:
+                    total_black = total_black + p.signal1_black
+        return total_black
     def creating_session(self):
+        group_matrix = []
+        players = self.get_players()
+        ppg = 1
+        for i in range(0, len(players), ppg):
+            group_matrix.append(players[i:i+ppg])
+        self.set_group_matrix(group_matrix)
+        self.group_randomly()
         ## world state (0=bad, 1=good)
         ## set the global world state
         world_state_binomial = np.random.binomial(1, 0.5) 
         ## set signal 
-        self.group_randomly()
         self.set_signal(Constants.env)
         for player in self.get_players():
             ## set the world state for each player equal to the global state
@@ -248,7 +254,7 @@ class Player(markets_models.Player):
         ''')
 
     Question_3 = models.IntegerField(
-    	choices=[1,2,3,4,5,6,7,8],
+        choices=[1,2,3,4,5,6,7,8],
         label='''
         How would you rank your own performance in this trading period? in another worlds, what is the beleive of your own
         ranking of your profit in this period. Please choose one of the following. 

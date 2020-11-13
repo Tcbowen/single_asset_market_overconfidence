@@ -67,6 +67,28 @@ class Subsession(markets_models.Subsession):
         ####################
         for p in self.get_players():
             p.set_total_payoff()
+    def get_black_balls(self):
+    	total_black =0
+    	for p in self.get_players():
+    		total_black = total_black+p.signal1_black
+    	return total_black
+    def get_white_balls(self):
+    	total_white =0
+    	for p in self.get_players():
+    		total_white = total_white+p.signal1_white
+    	return total_white
+    def get_black_balls_low(self):
+    	total_black =0
+    	for p in self.get_players():
+    		if p.signal_nature==0:
+    				total_black = total_black + p.signal1_black
+    	return total_black
+    def get_black_balls_high(self):
+    	total_black =0
+    	for p in self.get_players():
+    		if p.signal_nature==1:
+    				total_black = total_black + p.signal1_black
+    	return total_black
     def creating_session(self):
         ## world state (0=bad, 1=good)
         ## set the global world state
@@ -97,6 +119,16 @@ class Subsession(markets_models.Subsession):
             player.signal1_black = np.random.binomial(2,signal1_blackballs/5) 
             ## white balles = 2-black
             player.signal1_white = 2-player.signal1_black
+        ### get totals 
+        total_black = self.get_black_balls()
+        total_white = self.get_white_balls()
+        total_black_low = self.get_black_balls_low()
+        total_black_high= self.get_black_balls_high()
+        for player in self.get_players():
+            player.total_black = total_black
+            player.total_white = total_white
+            player.total_black_low = total_black_low
+            player.total_black_high = total_black_high
         ## create market sesssion
         if self.round_number > self.config.num_rounds:
             return
@@ -163,10 +195,11 @@ class Player(markets_models.Player):
         return self.subsession.config.cash_endowment
 
 ## Bayes methods
-    def BU_hi(self, k, m ):
-        return (math.pow(0.6,k) + math.pow(.4,m))/((math.pow(.6,k) + math.pow(.4,m)) +(math.pow(.4,k) + math.pow(.6,m)))
     def BU_low(self, k, m ):
+        return (math.pow(0.6,k) + math.pow(.4,m))/((math.pow(.6,k) + math.pow(.4,m)) +(math.pow(.4,k) + math.pow(.6,m)))
+    def BU_hi(self, k, m ):
         return (math.pow(0.8,k) + math.pow(.2,m))/((math.pow(.8,k) + math.pow(.2,m)) +(math.pow(.2,k) + math.pow(.8,m)))
+
     def BU_env_b(self, l, h ):
         return (((math.pow(0.6,l) * math.pow(.4,8-l)) + (math.pow(.8,h)*math.pow(.2,8-h)))/(((math.pow(.6,l)*math.pow(.4,8-l)*math.pow(.8,h)*math.pow(.2,8-h)) +(math.pow(.4,l)*math.pow(.6,8-l)*math.pow(.2,h)*math.pow(.4,8-h)))))
 
@@ -179,8 +212,10 @@ class Player(markets_models.Player):
     signal1_black = models.IntegerField()
     signal1_white = models.IntegerField()
     signal_nature = models.IntegerField()
-
-
+    total_black = models.IntegerField()
+    total_white = models.IntegerField()
+    total_black_low = models.IntegerField()
+    total_black_high = models.IntegerField()
 ## Questions 
     Question_1 = models.IntegerField(
         label='''
@@ -239,18 +274,16 @@ class Player(markets_models.Player):
             Question_1_payoff = n_asset_value
 
         #####Question 2#################################
-
         L = self.Question_2_low
         U = self.Question_2_hi
-        if Constants.env>0:
-            BU = self.BU_env_b(self.signal1_black, self.signal1_white)
+        if Constants.env==1:
+            BU = self.BU_env_b(self.total_black_low, self.total_black_high)
         else:
             if self.world_state==1:
-                BU = (int) (self.BU_hi(self.signal1_black, self.signal1_white))
+                BU = (int) (self.BU_hi(self.total_black, self.total_white))
              ## bad state
             else:
-                BU = (int) (self.BU_low(self.signal1_black, self.signal1_white))
-
+                BU = (int) (self.BU_low(self.total_black, self.total_white))
         if BU>L and BU<U:
             Question_2_payoff= (1-(U-L))
         else:

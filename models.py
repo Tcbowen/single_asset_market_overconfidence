@@ -16,7 +16,7 @@ class Constants(BaseConstants):
     players_per_group = None
     num_rounds = 20 
     ## sets the trading env (0=a, 1=b and c)
-    env = 1
+    env = 0
 
 
     # the columns of the config CSV and their types
@@ -233,7 +233,7 @@ class Player(markets_models.Player):
         this trading period. Please use the infromation to the right hand side to answer the 
         following question truthfully. 
 
-        What is the probailty( out of 100) that you believe the true state is 'G'?
+        What is the probailty( out of 100) that you believe the true state is 'G'??
 
         Your answer:'''
     )

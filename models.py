@@ -289,7 +289,7 @@ class Player(markets_models.Player):
         if Constants.env==1:
             BU = self.BU_env_b(self.total_black_low, self.total_black_high)
         else:
-            if self.world_state==1:
+            if self.signal_nature==1:
                 BU = (int) (self.BU_hi(self.total_black, self.total_white))
              ## bad state
             else:

@@ -61,8 +61,11 @@ class Subsession(markets_models.Subsession):
             rank.append(player)
         rank.sort(reverse = True, key = lambda x: x.profit)
         n=1
-        for r in rank:
-            r.ranking = n
+        for i in range(len(rank)):
+            if i>0 and rank[i].profit == rank[i-1].profit:
+                rank[i].ranking = rank[i-1].ranking
+            else:
+                rank[i].ranking = n
             n=n+1
         ####################
         for p in self.get_players():

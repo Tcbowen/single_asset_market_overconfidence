@@ -210,7 +210,7 @@ class Player(markets_models.Player):
         return (math.pow(0.8,k) + math.pow(.2,m))/((math.pow(.8,k) + math.pow(.2,m)) +(math.pow(.2,k) + math.pow(.8,m)))
 
     def BU_env_b(self, l, h ):
-        return (((math.pow(0.6,l) * math.pow(.4,8-l)) + (math.pow(.8,h)*math.pow(.2,8-h)))/(((math.pow(.6,l)*math.pow(.4,8-l)*math.pow(.8,h)*math.pow(.2,8-h)) +(math.pow(.4,l)*math.pow(.6,8-l)*math.pow(.2,h)*math.pow(.4,8-h)))))
+        return (((math.pow(0.6,l) * math.pow(.4,8-l))*(math.pow(.8,h)*math.pow(.2,8-h)))/(((math.pow(.6,l)*math.pow(.4,8-l)*math.pow(.8,h)*math.pow(.2,8-h)) +(math.pow(.4,l)*math.pow(.6,8-l)*math.pow(.2,h)*math.pow(.8,8-h)))))
 
 ## Variables 
     ranking = models.IntegerField()
@@ -232,20 +232,21 @@ class Player(markets_models.Player):
 ## Questions 
     Question_1 = models.IntegerField(
         label='''
-        After the trading, you should have a better idea of what is the true state of the wolrd in this
-        this trading period. Please use the infromation to the right hand side to answer the 
-        following question truthfully. 
+        After the trading, you should have a better idea of what the true state of the world is in this
+        trading period. Please use the information on the right-hand side to answer the 
+        following questions. 
 
-        What is the probailty( out of 100) that you believe the true state is 'G'??
+        What is the probaility( out of 100) that you believe the true state is 'G'?
 
         Your answer:'''
     )
 
     Question_2_low = models.IntegerField(
         label='''
-        Please provide an interval that you are 87.5 onfident that the computer's 
-        prediction of the true state is 'G' falls into. Again please answer the queastion
-        truthfully.
+        Instead of providing a single percentage value.
+        Please provide a range of your estimation, which you are 90 percent confident about your own report. 
+        What range you would guess? Please report your lower bound and upper bound below. 
+
 
         your answer:
 
@@ -259,8 +260,8 @@ class Player(markets_models.Player):
     Question_3 = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
-        How would you rank your own performance in this trading period? in another worlds, what is the beleive of your own
-        ranking of your profit in this period. Please choose one of the following. 
+        How would you rank your own performance in this trading period? In another worlds, how would you
+        rank your own profits relative to the other traders in this trading period? Please choose one of the following. 
         '''
     )
 

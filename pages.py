@@ -8,43 +8,34 @@ class Market(BaseMarketPage):
         if self.timeout_happened:
             self.player.save()
 
-    #def is_displayed(self):
-       # return self.round_number <= self.subsession.config.num_rounds
-
     def vars_for_template(self):
-        ##load signal
+        
         img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
-        ## load balls
         img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
+
         return {
             'signal1black': self.player.signal1_black,
             'signal1white': self.player.signal1_white,
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
-class set_profits(WaitPage):
-    wait_for_all_groups = True
-    
-    after_all_players_arrive = 'set_profits'
-
 class Survey(Page):
     timeout_seconds = 30
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
+
     def vars_for_template(self):
-            ##load signal
+            
             def before_next_page(self):
                 self.player.save()
-            #def is_displayed(self):
-              #  return self.round_number <= self.subsession.config.num_rounds
+    
             img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
-            ## load balls
             img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
+
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,
-                'profit':self.player.profit,
                 'img_url': img_url,
                 'img_sig_url': img_sig_url,
             }
@@ -58,10 +49,12 @@ class Wait(WaitPage):
     after_all_players_arrive = 'set_payoffs'
     
 class Results(Page):
+
     timeout_seconds = 15
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
+
     def vars_for_template(self): 
         return {
             'profit': self.player.profit,
@@ -73,4 +66,4 @@ class Results(Page):
         }
 
 
-page_sequence = [Market,set_profits, Survey, Wait, Results]
+page_sequence = [Market, Survey, Wait, Results]

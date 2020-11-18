@@ -34,100 +34,40 @@ class Subsession(markets_models.Subsession):
     @property
     def config(self):
         config_addr = Constants.name_in_url + '/configs/' + self.session.config['config_file']
-        return ConfigManager(config_addr, self.round_number, Constants.config_fields)
-    
+        return ConfigManager(config_addr, self.round_number, Constants.config_fields)  
     def allow_short(self):
         return self.config.allow_short
-
-    def set_signal(self, env):
-        if env == 0:
-            sig = random.choice([0, 1])## ramdomly chooses low or high for the round
-            for p in self.get_players():
-                p.signal_nature = sig
-        else:
-            sig = itertools.cycle([0, 1])
-            for g in self.get_groups():
-                signal = next(sig)
-                for p in g.get_players():
-                    p.signal_nature = signal
-    def set_profits(self):
-         for player in self.get_players():
-            player.set_profit()
-    def set_payoffs(self):
-        ############
-        ##sort profit to get ranking 
-        rank = []
-        for player in self.get_players():
-            rank.append(player)
-        rank.sort(reverse = True, key = lambda x: x.profit)
-        n=1
-        for i in range(len(rank)):
-            if i>0 and rank[i].profit == rank[i-1].profit:
-                rank[i].ranking = rank[i-1].ranking
-            else:
-                rank[i].ranking = n
-            n=n+1
-        ####################
-        for p in self.get_players():
-            p.set_total_payoff()
-    def get_black_balls(self):
-        total_black =0
-        for p in self.get_players():
-            total_black = total_black+p.signal1_black
-        return total_black
-    def get_white_balls(self):
-        total_white =0
-        for p in self.get_players():
-            total_white = total_white+p.signal1_white
-        return total_white
-    def get_black_balls_low(self):
-        total_black =0
-        for p in self.get_players():
-            if p.signal_nature==0:
-                    total_black = total_black + p.signal1_black
-        return total_black
-    def get_black_balls_high(self):
-        total_black =0
-        for p in self.get_players():
-            if p.signal_nature==1:
-                    total_black = total_black + p.signal1_black
-        return total_black
     def creating_session(self):
         group_matrix = []
         players = self.get_players()
         ppg = 1
+
         for i in range(0, len(players), ppg):
             group_matrix.append(players[i:i+ppg])
         self.set_group_matrix(group_matrix)
         self.group_randomly()
-        ## world state (0=bad, 1=good)
-        ## set the global world state
+
         world_state_binomial = np.random.binomial(1, 0.5) 
-        ## set signal 
         self.set_signal(Constants.env)
+
         for player in self.get_players():
             ## set the world state for each player equal to the global state
             player.world_state = world_state_binomial 
             ##good state
             if player.world_state == 1:
                 if player.signal_nature==1:
-                    ##hi = 4 black
                     signal1_blackballs = 4
                 else:  
-                    ##low = 2 black
                     signal1_blackballs = 3               
             ##bad state
             if player.world_state == 0:
                 if player.signal_nature==1:
-                    ##hi = 3 black
                     signal1_blackballs = 1
                 else:  
-                    ##low = 2 black
                     signal1_blackballs = 2  
-            ### cacluated the black balls to be shown using binomial distribution
             player.signal1_black = np.random.binomial(2,signal1_blackballs/5) 
-            ## white balles = 2-black
             player.signal1_white = 2-player.signal1_black
+
         ### get totals 
         total_black = self.get_black_balls()
         total_white = self.get_white_balls()
@@ -138,11 +78,94 @@ class Subsession(markets_models.Subsession):
             player.total_white = total_white
             player.total_black_low = total_black_low
             player.total_black_high = total_black_high
-        ## create market sesssion
+
         if self.round_number > self.config.num_rounds:
             return
         return super().creating_session()
+    #######################################################################
+    ### sets the players signals 
+    ### env, player
+    #######################################################################
+    def set_signal(self, env):
+        if env == 0:
+            sig = random.choice([0, 1])## ramdomly chooses low or high for the round
+            for p in self.get_players():
+                p.signal_nature = sig
+        else:
+            sig = itertools.cycle([0, 1])
 
+            for g in self.get_groups():
+                signal = next(sig)
+                for p in g.get_players():
+                    p.signal_nature = signal
+    #######################################################################
+    ### sets all profits players 
+    ### player
+    #######################################################################
+    def set_profits(self):
+         for player in self.get_players():
+            player.set_profit()
+    #######################################################################
+    ### sets the payoff for each player and assigns a ranking
+    ### player
+    #######################################################################
+    def set_payoffs(self):
+        ############
+        self.set_profit()
+        ##sort profit to get ranking 
+        rank = []
+        for player in self.get_players():
+            rank.append(player)
+        rank.sort(reverse = True, key = lambda x: x.profit)
+        n=1
+
+        for i in range(len(rank)):
+            if i>0 and rank[i].profit == rank[i-1].profit:
+                rank[i].ranking = rank[i-1].ranking
+            else:
+                rank[i].ranking = n
+            n=n+1
+
+        for p in self.get_players():
+            p.set_total_payoff()
+    #######################################################################
+    ### retuns the total black and white balls in the systems 
+    ### player
+    #######################################################################
+    def get_black_balls(self):
+        total_black =0
+        for p in self.get_players():
+            total_black = total_black+p.signal1_black
+
+        return total_black
+    def get_white_balls(self):
+        total_white =0
+        for p in self.get_players():
+            total_white = total_white+p.signal1_white
+
+        return total_white
+    #######################################################################
+    ### retuns the total black balls when signal low
+    ### player
+    #######################################################################
+    def get_black_balls_low(self):
+        total_black =0
+        for p in self.get_players():
+            if p.signal_nature==0:
+                    total_black = total_black + p.signal1_black
+
+        return total_black
+    #######################################################################
+    ### retuns the total black balls when signal high
+    ### player
+    #######################################################################
+    def get_black_balls_high(self):
+        total_black =0
+        for p in self.get_players():
+            if p.signal_nature==1:
+                    total_black = total_black + p.signal1_black
+
+        return total_black
 
 class Group(markets_models.Group):
 
@@ -208,11 +231,9 @@ class Player(markets_models.Player):
         return (math.pow(0.6,k) + math.pow(.4,m))/((math.pow(.6,k) + math.pow(.4,m)) +(math.pow(.4,k) + math.pow(.6,m)))
     def BU_hi(self, k, m ):
         return (math.pow(0.8,k) + math.pow(.2,m))/((math.pow(.8,k) + math.pow(.2,m)) +(math.pow(.2,k) + math.pow(.8,m)))
-
     def BU_env_b(self, l, h ):
         return (((math.pow(0.6,l) * math.pow(.4,8-l))*(math.pow(.8,h)*math.pow(.2,8-h)))/(((math.pow(.6,l)*math.pow(.4,8-l)*math.pow(.8,h)*math.pow(.2,8-h)) +(math.pow(.4,l)*math.pow(.6,8-l)*math.pow(.2,h)*math.pow(.8,8-h)))))
-
-## Variables 
+## defined Variables 
     ranking = models.IntegerField()
     profit = models.IntegerField()
     total_payoff = models.IntegerField()
@@ -264,7 +285,9 @@ class Player(markets_models.Player):
         rank your own profits relative to the other traders in this trading period? Please choose one of the following. 
         '''
     )
-
+    #######################################################################
+    ### sets the proft for an indivdual player 
+    #######################################################################
     def set_profit(self):
         shares = list(self.settled_assets.values())[0]
         if self.world_state==1:
@@ -272,13 +295,16 @@ class Player(markets_models.Player):
              ## bad state
         else:
            self.profit =  shares*100 - (self.subsession.config.cash_endowment+self.subsession.config.asset_endowment*100 - self.settled_cash) 
-        ### return the ranking of a player and set ranking
+    #######################################################################
+    ### sets the proft for an indivdual player 
+    #######################################################################
     def get_profit(self):
         return self.profit
-
+    #######################################################################
+    ### calculates payoff
+    #######################################################################
     def set_total_payoff(self):
-        ## question 1#######################################
-
+        ###################question 1#######################################
         p_n = random.randint(0,99)
         n_asset_binomail = np.random.binomial(1, p_n/100)
         n_asset_value = n_asset_binomail*200 +100
@@ -286,10 +312,11 @@ class Player(markets_models.Player):
             self.Question_1_payoff = self.world_state*200 +100
         else:
             self.Question_1_payoff = n_asset_value
+        #########################Question 2#################################
 
-        #####Question 2#################################
         L = self.Question_2_low
         U = self.Question_2_hi
+
         if Constants.env==1:
             BU = self.BU_env_b(self.total_black_low, self.total_black_high)
         else:
@@ -298,12 +325,12 @@ class Player(markets_models.Player):
              ## bad state
             else:
                 BU = (int) (self.BU_low(self.total_black, self.total_white))
+
         if BU>L and BU<U:
             self.Question_2_payoff= (1-(U-L))
         else:
             self.Question_2_payoff= 0
-
-        ### question 3###################################
+       ################### ### question 3###################################
 
         ##C correct ranking
         C = self.ranking
@@ -311,26 +338,20 @@ class Player(markets_models.Player):
         R = self.Question_3
         self.Question_3_payoff= (int) (1.2 - (1/50)*(math.pow((C - R),2)))
 
-        ##payoff from assets#############################################
+        ############payoff from assets###################
         ## 10,000 - cost of shares pruchased + procceds from sales
         self.payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
 
-        ##final portfolio value########################################
-
+        #################final portfolio value###############
         shares = list(self.settled_assets.values())[0]
-
         if self.world_state == 1:
-            multiplier =300
+            portfolio_value = share*300
         else:
-            multiplier =100
-        ##number of shares * multiplier 
+            portfolio_value = shares*100
 
-        portfolio_value = shares*multiplier
-
-        ## payoff_from_assets#############################
+        ###########payoff_from_assets##################
         ### adds cash to the values of shares purchased 
         self.payoff_from_assets = self.payoff_from_assets + portfolio_value
 
         ## set total payoff ###############################
-        
         self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.payoff_from_assets

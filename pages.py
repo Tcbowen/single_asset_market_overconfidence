@@ -56,13 +56,19 @@ class Results(Page):
             self.player.save()
 
     def vars_for_template(self): 
+        if self.player.world_state==1:
+            state="Good"
+        elif self.player.world_state==0:
+            state="Bad"
+
         return {
             'profit': self.player.profit,
             'Question_1_pay': self.player.Question_1_payoff,
             'Question_2_pay': self.player.Question_2_payoff,
             'Question_3_pay': self.player.Question_3_payoff,
             'total_pay':self.player.total_payoff,
-            'asset_pay': self.player.payoff_from_assets 
+            'asset_pay': self.player.payoff_from_assets,
+            'state': state
         }
 
 

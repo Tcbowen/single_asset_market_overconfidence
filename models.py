@@ -111,7 +111,7 @@ class Subsession(markets_models.Subsession):
     #######################################################################
     def set_payoffs(self):
         ############
-        self.set_profit()
+        self.set_profits()
         ##sort profit to get ranking 
         rank = []
         for player in self.get_players():
@@ -345,7 +345,7 @@ class Player(markets_models.Player):
         #################final portfolio value###############
         shares = list(self.settled_assets.values())[0]
         if self.world_state == 1:
-            portfolio_value = share*300
+            portfolio_value = shares*300
         else:
             portfolio_value = shares*100
 

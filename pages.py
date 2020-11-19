@@ -67,7 +67,6 @@ class Results(Page):
             'Question_2_pay': self.player.Question_2_payoff,
             'Question_3_pay': self.player.Question_3_payoff,
             'total_pay':self.player.total_payoff,
-            'asset_pay': self.player.payoff_from_assets,
             'state': state
         }
 

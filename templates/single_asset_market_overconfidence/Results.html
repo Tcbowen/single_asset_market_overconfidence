@@ -3,23 +3,45 @@
 {% block title %}
 Your Results 
 {% endblock %}
+{% block styles %}
+<style>
+
+	.text {
+		text-align: center;
+		font-size: 150%;
+		font-family: verdana;
+	}
+
+</style>
+
+{% endblock %}
 {% block content %}
-<br>
-your profits: {{profit}}
-</br>
-<br>
-payoff from Question 1: {{Question_1_pay}}
-</br>
-<br>
-payoff from Question 2: {{Question_2_pay}}
-</br>
-<br>
-payoff from Question 3: {{Question_2_pay}}
-</br>
-<br>
-payoff from Assets: {{asset_pay}}
-</br>
-<br>
-total payoff for this period: {{total_pay}}
-</br>
+
+	<div class="text">
+
+		<br>
+			The true world state for this period: {{state}}
+		</br>
+
+		<br>
+			Your profits this period: {{profit}}
+		</br>
+
+		<br>
+			Payoff from question 1: {{Question_1_pay}}
+		</br>
+
+		<br>
+			Payoff from question 2: {{Question_2_pay}}
+		</br>
+
+		<br>
+			Payoff from question 3: {{Question_2_pay}}
+		</br>
+
+		<br>
+			Total payoff for this period: {{total_pay}}
+		</br>
+
+	</div>
 {% endblock %}

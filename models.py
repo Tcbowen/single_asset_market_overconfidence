@@ -338,20 +338,5 @@ class Player(markets_models.Player):
         R = self.Question_3
         self.Question_3_payoff= (int) (1.2 - (1/50)*(math.pow((C - R),2)))
 
-        ############payoff from assets###################
-        ## 10,000 - cost of shares pruchased + procceds from sales
-        self.payoff_from_assets = self.settled_cash - self.subsession.config.cash_endowment
-
-        #################final portfolio value###############
-        shares = list(self.settled_assets.values())[0]
-        if self.world_state == 1:
-            portfolio_value = shares*300
-        else:
-            portfolio_value = shares*100
-
-        ###########payoff_from_assets##################
-        ### adds cash to the values of shares purchased 
-        self.payoff_from_assets = self.payoff_from_assets + portfolio_value
-
         ## set total payoff ###############################
-        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.payoff_from_assets
+        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.profit

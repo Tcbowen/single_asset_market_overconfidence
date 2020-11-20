@@ -44,7 +44,6 @@ class SingleAssetTextInterface extends PolymerElement {
                     flex: 1 0 0;
                     min-height: 0;
                 }
-
                 #main-container {
                     height: 40vh;
                     margin-bottom: 10px;
@@ -59,17 +58,28 @@ class SingleAssetTextInterface extends PolymerElement {
                 #log-container > div {
                     flex: 0 1 90%;
                 }
-
+                #container_orders > div {
+                    height: 15vh;
+                }
                 order-list, trade-list, event-log {
                     border: 1px solid black;
                 }
-
                 .order-info-header {
                     text-align: center;
                     padding-bottom: 2px;
                 }
+                #allocation{
+                    display: flex;
+                    height: 60%;
+                    flex-direction: column;
+                    justify-content: center;
+                    margin: 5px;
+                    padding: 5px;
+                    border: 1px solid black;
+                    text-align: center;
+                    padding-bottom: 2px;
+                }   
             </style>
-
             <simple-modal
                 id="modal"
             ></simple-modal>
@@ -89,7 +99,6 @@ class SingleAssetTextInterface extends PolymerElement {
                 on-confirm-cancel="_confirm_cancel"
                 on-error="_handle_error"
             ></trader-state>
-
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
@@ -128,17 +137,22 @@ class SingleAssetTextInterface extends PolymerElement {
                         on-order-accepted="_order_accepted"
                     ></order-list>
                 </div>
-                <div>
-                    <order-enter-widget
-                        class="flex-fill"
-                        settled-assets="{{settledAssets}}"
-                        available-assets="{{availableAssets}}"
-                        settled-cash="{{settledCash}}"
-                        available-cash="{{availableCash}}"
-                        on-order-entered="_order_entered"
-                    ></order-enter-widget>
+                <div class ="container" id= "allocation">
+                    <div>
+                        <h4>Your Allocation</h4>
+                    </div>
+                    <div>Your Experimental Points: "{{settledCash}}"</div>
+                    <div>Your Assets: "{{settledAssets}}"</div>
                 </div>
             </div>
+            <div class = "container" id ="container_orders">
+                <div class="container" id "orders">
+                <order-enter-widget
+                        class="flex-fill"
+                        on-order-entered = "_order_entered"
+                    ></order-enter-widget>
+                </div>
+             </div>
             <div class="container" id="log-container">
                 <div>
                     <event-log

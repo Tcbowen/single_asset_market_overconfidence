@@ -8,8 +8,6 @@ import '/static/otree_markets/trade_list.js';
 import '/static/otree_markets/simple_modal.js';
 import '/static/otree_markets/event_log.js';
 
-import './order_enter_widget.js';
-
 /*
     this component is a single-asset market, implemented using otree_markets' trader_state component and some of
     otree_markets' reusable UI widgets.
@@ -68,17 +66,15 @@ class SingleAssetTextInterface extends PolymerElement {
                     text-align: center;
                     padding-bottom: 2px;
                 }
-                #allocation{
-                    display: flex;
-                    height: 60%;
-                    flex-direction: column;
-                    justify-content: center;
-                    margin: 5px;
-                    padding: 5px;
-                    border: 1px solid black;
-                    text-align: center;
-                    padding-bottom: 2px;
+                #allocation {
+                    align-self: center;
+                    text-align: center; 
                 }   
+                #order-input > div {
+                    border: 1px solid black;
+                    padding: 5px;
+                    margin-bottom: 10px;
+                }
             </style>
             <simple-modal
                 id="modal"
@@ -137,7 +133,7 @@ class SingleAssetTextInterface extends PolymerElement {
                         on-order-accepted="_order_accepted"
                     ></order-list>
                 </div>
-                <div class ="container" id= "allocation">
+                <div id="allocation">
                     <div>
                         <h4>Your Allocation</h4>
                     </div>
@@ -145,14 +141,26 @@ class SingleAssetTextInterface extends PolymerElement {
                     <div>Your Assets: "{{settledAssets}}"</div>
                 </div>
             </div>
-            <div class = "container" id ="container_orders">
-                <div class="container" id "orders">
-                <order-enter-widget
-                        class="flex-fill"
-                        on-order-entered = "_order_entered"
-                    ></order-enter-widget>
+            <div class="container" id="order-input">
+                <div>
+                    <label for="bid_price_input">Price</label>
+                    <input id="bid_price_input" type="number" min="0">
+                    <label for="bid_volume_input">Volume</label>
+                    <input id="bid_volume_input" type="number" min="1">
+                    <div>
+                        <button type="button" on-click="_order_entered" value="bid">Enter Bid</button>
+                    </div>
                 </div>
-             </div>
+                <div>
+                    <label for="ask_price_input">Price</label>
+                    <input id="ask_price_input" type="number" min="0">
+                    <label for="ask_volume_input">Volume</label>
+                    <input id="ask_volume_input" type="number" min="1">
+                    <div>
+                        <button type="button" on-click="_order_entered" value="ask">Enter Ask</button>
+                    </div>
+                </div>
+            </div>
             <div class="container" id="log-container">
                 <div>
                     <event-log
@@ -178,12 +186,22 @@ class SingleAssetTextInterface extends PolymerElement {
 
     // triggered when this player enters an order
     _order_entered(event) {
-        const order = event.detail;
-        if (isNaN(order.price) || isNaN(order.volume)) {
+        const is_bid = event.target.value == 'bid';
+        let price, volume;
+        if (is_bid) {
+            price = parseInt(this.$.bid_price_input.value);
+            volume = parseInt(this.$.bid_volume_input.value);
+        }
+        else {
+            price = parseInt(this.$.ask_price_input.value);
+            volume = parseInt(this.$.ask_volume_input.value);
+        }
+
+        if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');
             return;
         }
-        this.$.trader_state.enter_order(order.price, order.volume, order.is_bid);
+        this.$.trader_state.enter_order(price, volume, is_bid);
     }
 
     // triggered when this player cancels an order

@@ -12,31 +12,49 @@
 
 {% block styles %}
 	<style>
+		body > div.otree-body.container > h2 {
+			display: none;
+		}
+		.market-container {
+			padding-top: 20px;
+			width: 100vw;
+			margin-left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 		.market {
-			float: left;
-			width: 70%;
+			flex: 0 1 1000px;
 		}
 		.signal {
-			float: left;
-			width: 30%;
+			flex: 0 1 400px;
+		}
+		.signal img {
+			max-width: 100%;
+			height: auto;
 		}
 	</style>
 {% endblock %} 
 
 {% block content %}
-	<div class="market">
-			<disable-interface-overlay> 
-    		</disable-interface-overlay>
-    		<single-asset-text-interface>
-    		</single-asset-text-interface>
-	</div>
-	<div class = "signal">
+	<disable-interface-overlay> 
+	</disable-interface-overlay>
+
+	<div class="market-container">
+		<div class="market">
+			<single-asset-text-interface>
+			</single-asset-text-interface>
+		</div>
+		<div class="signal">
 			<img src="{{img_sig_url}}"/>
 			<p>
-				The computer drew two balls from the bag that correspond to the true state of the world, and the two balls are.   
-				<br> {{ signal1black }} black balls and {{ signal1white }} white balls.</br>
-				<img src="{{img_url}}"/>
+				The computer drew two balls from the bag that correspond to the true state of the world. The two balls are:
 			</p>
-			
+			<p>
+				{{ signal1black }} black ball{{ signal1black|pluralize }} and {{ signal1white }} white ball{{ signal1white|pluralize }}
+			</p>
+			<img src="{{img_url}}"/>
+		</div>
 	</div>
 {% endblock %}

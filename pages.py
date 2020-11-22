@@ -3,10 +3,6 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
 class Market(BaseMarketPage):
-    timeout_seconds = 120
-    def before_next_page(self):
-        if self.timeout_happened:
-            self.player.save()
 
     def vars_for_template(self):
         
@@ -19,6 +15,7 @@ class Market(BaseMarketPage):
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
+
 class Survey(Page):
     timeout_seconds = 30
     def before_next_page(self):

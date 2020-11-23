@@ -327,7 +327,7 @@ class Player(markets_models.Player):
                 BU = (int) (self.BU_low(self.total_black, self.total_white))
 
         if BU>L and BU<U:
-            self.Question_2_payoff= (1-(U-L))
+            self.Question_2_payoff= (100-(U-L))
         else:
             self.Question_2_payoff= 0
        ################### ### question 3###################################
@@ -336,7 +336,7 @@ class Player(markets_models.Player):
         C = self.ranking
         ##R is the reported belief
         R = self.Question_3
-        self.Question_3_payoff= (int) (1.2 - (1/50)*(math.pow((C - R),2)))
+        self.Question_3_payoff= (int) (100 - (math.pow((C - R),2)))
 
         ## set total payoff ###############################
         self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.profit

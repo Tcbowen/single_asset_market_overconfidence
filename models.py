@@ -321,12 +321,12 @@ class Player(markets_models.Player):
             BU = self.BU_env_b(self.total_black_low, self.total_black_high)
         else:
             if self.signal_nature==1:
-                BU = (int) (self.BU_hi(self.total_black, self.total_white))
+                BU = self.BU_hi(self.total_black, self.total_white)
              ## bad state
             else:
-                BU = (int) (self.BU_low(self.total_black, self.total_white))
+                BU = self.BU_low(self.total_black, self.total_white)
 
-        if BU>L and BU<U:
+        if BU>(L/100) and BU<(U/100):
             self.Question_2_payoff= (100-(U-L))
         else:
             self.Question_2_payoff= 0

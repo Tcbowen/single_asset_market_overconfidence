@@ -3,7 +3,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
 class Market(BaseMarketPage):
-    timeout_seconds = 120
+    timeout_seconds = 3
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()

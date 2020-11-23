@@ -141,8 +141,8 @@ class SingleAssetTextInterface extends PolymerElement {
                     <div>
                         <h4>Your Allocation</h4>
                     </div>
-                    <div>Your Experimental Points: "{{settledCash}}"</div>
-                    <div>Your Assets: "{{settledAssets}}"</div>
+                    <div>Your Experimental Points: {{settledCash}}</div>
+                    <div>Your Assets: {{settledAssets}}</div>
                 </div>
             </div>
             <div class = "container" id ="container_orders">

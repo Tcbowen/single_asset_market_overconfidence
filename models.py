@@ -239,24 +239,11 @@ class Player(markets_models.Player):
 ## Questions 
     Question_1 = models.IntegerField(
         label='''
-        After the trading, you should have a better idea of what the true state of the world is in this
-        trading period. Please use the information on the right-hand side to answer the 
-        following questions. 
-
-        What is the probaility( out of 100) that you believe the true state is 'G'?
-
         Your answer:'''
     )
 
     Question_2_low = models.IntegerField(
         label='''
-        Instead of providing a single percentage value.
-        Please provide a range of your estimation, which you are 90 percent confident about your own report. 
-        What range you would guess? Please report your lower bound and upper bound below. 
-
-
-        your answer:
-
         (low)
         '''
     )
@@ -267,8 +254,7 @@ class Player(markets_models.Player):
     Question_3 = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
-        How would you rank your own performance in this trading period? In another worlds, how would you
-        rank your own profits relative to the other traders in this trading period? Please choose one of the following. 
+         Please choose one of the following.
         '''
     )
     #######################################################################

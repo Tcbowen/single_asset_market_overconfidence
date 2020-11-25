@@ -32,9 +32,42 @@
 </b>
 </div>
 <div class="forms"> 
-	{% formfields %}
-
+	<div> 
+		<br>
+			After the trading, you should have a better idea of what the true state of the world is in this
+	        trading period. Please use the information on the right-hand side to answer the 
+	        following questions. 
+    	</br>
+    	<br>
+        	What is the probaility( out of 100) that you believe the true state is 'G'?
+        </br>
+        {% formfield player.Question_1 %}
+    </div>
+	<div> 
+		<br>
+	        Please provide a range of your estimation, which you are 90 percent confident about your own report. 
+	        What range you would guess? 
+    	</br>
+    	<br>
+        	Please report your lower bound and upper bound below. 
+        </br>
+        <br>
+       		your answer:
+        	{% formfield player.Question_2_low %}
+        	{% formfield player.Question_2_hi %}
+    </div>
+    	<div> 
+		<br>
+			How would you rank your own performance in this trading period? In another worlds, how would you
+        	rank your own profits relative to the other traders in this trading period? 
+    	</br>
+    	<br>
+        {% formfield player.Question_3 %}
+        </br>
+    </div>
     {% next_button %}
 </div>
 </body>
 {% endblock %}
+
+

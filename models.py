@@ -169,7 +169,7 @@ class Subsession(markets_models.Subsession):
 
 class Group(markets_models.Group):
     def period_length(self):
-        return 120
+        return self.subsession.config.period_length
 
     def _on_enter_event(self, event):
         '''handle an enter message sent from the frontend

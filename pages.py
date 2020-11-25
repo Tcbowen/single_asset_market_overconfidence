@@ -3,14 +3,6 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
 class Market(BaseMarketPage):
-<<<<<<< HEAD
-    timeout_seconds = 3
-    def before_next_page(self):
-        if self.timeout_happened:
-            self.player.save()
-=======
->>>>>>> morgan
-
     def vars_for_template(self):
         
         img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)

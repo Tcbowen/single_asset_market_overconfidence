@@ -2,7 +2,10 @@ from otree_markets.pages import BaseMarketPage
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
-class Market(BaseMarketPage):
+class Market(BaseMarketPage): 
+    def get_timeout_seconds(self):
+        return self.group.get_remaining_time()
+    
     def vars_for_template(self):
         
         img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
@@ -14,7 +17,6 @@ class Market(BaseMarketPage):
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
-
 class Survey(Page):
     timeout_seconds = 30
     def before_next_page(self):

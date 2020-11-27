@@ -190,6 +190,8 @@ class Group(markets_models.Group):
             if best_bid and best_bid.pcode == enter_msg['pcode'] and enter_msg['price'] <= best_bid.price:
                 self._send_error(enter_msg['pcode'], 'Cannot enter an ask that crosses your own bid')
                 return
+        if enter_msg['price'] >300 or enter_msg['price'] <100:
+            return
         super()._on_enter_event(event)
 
     

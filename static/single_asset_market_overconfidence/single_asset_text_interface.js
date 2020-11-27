@@ -196,8 +196,9 @@ class SingleAssetTextInterface extends PolymerElement {
             price = parseInt(this.$.ask_price_input.value);
             volume = parseInt(this.$.ask_volume_input.value);
         }
-        if (price<100 || price>300 ){
+        if (price<100 || price>300){
             this.$.log.error('Invalid price entered');
+            return;
         }
         if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');

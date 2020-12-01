@@ -192,7 +192,23 @@ class Group(markets_models.Group):
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
         super()._on_enter_event(event)
-
+        
+    def confirm_enter(self, order):
+        exchange = order.exchange
+        try:
+            # query for active orders in the same exchange as the new order, from the same player
+            old_order = (
+                exchange.orders
+                    .filter(pcode=order.pcode, is_bid=order.is_bid, status=OrderStatusEnum.ACTIVE)
+                    .exclude(id=order.id)
+                    .get()
+            )
+        except Order.DoesNotExist: 
+            pass
+        else:
+            # if another order exists, cancel it
+            exchange.cancel_order(old_order.id)
+        super().confirm_enter(order)
     
 
 class Player(markets_models.Player):

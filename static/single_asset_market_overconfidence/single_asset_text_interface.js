@@ -95,6 +95,13 @@ class SingleAssetTextInterface extends PolymerElement {
                 on-confirm-cancel="_confirm_cancel"
                 on-error="_handle_error"
             ></trader-state>
+            <div id="allocation">
+                    <div>
+                        <h4>Your Allocation</h4>
+                    </div>
+                    <div>Your Experimental Points: {{settledCash}}</div>
+                    <div>Your Assets: {{settledAssets}}</div>
+            </div>
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
@@ -132,13 +139,6 @@ class SingleAssetTextInterface extends PolymerElement {
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
                     ></order-list>
-                </div>
-                <div id="allocation">
-                    <div>
-                        <h4>Your Allocation</h4>
-                    </div>
-                    <div>Your Experimental Points: {{settledCash}}</div>
-                    <div>Your Assets: {{settledAssets}}</div>
                 </div>
             </div>
             <div class="container" id="order-input">
@@ -196,14 +196,15 @@ class SingleAssetTextInterface extends PolymerElement {
             price = parseInt(this.$.ask_price_input.value);
             volume = parseInt(this.$.ask_volume_input.value);
         }
-        if (price<100 || price>300){
-            this.$.log.error('Invalid price entered');
-            return;
-        }
         if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');
             return;
         }
+        if (price<100 || price>300){
+            this.$.log.error('Invalid price entered');
+            return;
+        }
+        
         this.$.trader_state.enter_order(price, volume, is_bid);
     }
 

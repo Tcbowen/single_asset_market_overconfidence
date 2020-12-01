@@ -2,49 +2,38 @@ from otree_markets.pages import BaseMarketPage
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
 
-class Market(BaseMarketPage):
-    timeout_seconds = 120
-    def before_next_page(self):
-        if self.timeout_happened:
-            self.player.save()
-
-    #def is_displayed(self):
-       # return self.round_number <= self.subsession.config.num_rounds
-
+class Market(BaseMarketPage): 
+    def get_timeout_seconds(self):
+        return self.group.get_remaining_time()
+    
     def vars_for_template(self):
-        ##load signal
+        
         img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
-        ## load balls
         img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
+
         return {
             'signal1black': self.player.signal1_black,
             'signal1white': self.player.signal1_white,
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
-class set_profits(WaitPage):
-    wait_for_all_groups = True
-    
-    after_all_players_arrive = 'set_profits'
-
 class Survey(Page):
     timeout_seconds = 30
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
+
     def vars_for_template(self):
-            ##load signal
+            
             def before_next_page(self):
                 self.player.save()
-            #def is_displayed(self):
-              #  return self.round_number <= self.subsession.config.num_rounds
+    
             img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
-            ## load balls
             img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
+
             return {
                 'signal1black': self.player.signal1_black,
                 'signal1white': self.player.signal1_white,
-                'profit':self.player.profit,
                 'img_url': img_url,
                 'img_sig_url': img_sig_url,
             }
@@ -56,6 +45,28 @@ class Wait(WaitPage):
     wait_for_all_groups = True
     
     after_all_players_arrive = 'set_payoffs'
+    
+class Results(Page):
+
+    timeout_seconds = 15
+    def before_next_page(self):
+        if self.timeout_happened:
+            self.player.save()
+
+    def vars_for_template(self): 
+        if self.player.world_state==1:
+            state="Good"
+        elif self.player.world_state==0:
+            state="Bad"
+
+        return {
+            'profit': self.player.profit,
+            'Question_1_pay': self.player.Question_1_payoff,
+            'Question_2_pay': self.player.Question_2_payoff,
+            'Question_3_pay': self.player.Question_3_payoff,
+            'total_pay':self.player.total_payoff,
+            'state': state
+        }
 
 
-page_sequence = [Market,set_profits, Survey, Wait]
+page_sequence = [Market, Survey, Wait, Results]

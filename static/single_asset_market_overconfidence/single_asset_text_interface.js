@@ -8,8 +8,6 @@ import '/static/otree_markets/trade_list.js';
 import '/static/otree_markets/simple_modal.js';
 import '/static/otree_markets/event_log.js';
 
-import './order_enter_widget.js';
-
 /*
     this component is a single-asset market, implemented using otree_markets' trader_state component and some of
     otree_markets' reusable UI widgets.
@@ -44,7 +42,6 @@ class SingleAssetTextInterface extends PolymerElement {
                     flex: 1 0 0;
                     min-height: 0;
                 }
-
                 #main-container {
                     height: 40vh;
                     margin-bottom: 10px;
@@ -59,17 +56,26 @@ class SingleAssetTextInterface extends PolymerElement {
                 #log-container > div {
                     flex: 0 1 90%;
                 }
-
+                #container_orders > div {
+                    height: 15vh;
+                }
                 order-list, trade-list, event-log {
                     border: 1px solid black;
                 }
-
                 .order-info-header {
                     text-align: center;
                     padding-bottom: 2px;
                 }
+                #allocation {
+                    align-self: center;
+                    text-align: center; 
+                }   
+                #order-input > div {
+                    border: 1px solid black;
+                    padding: 5px;
+                    margin-bottom: 10px;
+                }
             </style>
-
             <simple-modal
                 id="modal"
             ></simple-modal>
@@ -89,7 +95,13 @@ class SingleAssetTextInterface extends PolymerElement {
                 on-confirm-cancel="_confirm_cancel"
                 on-error="_handle_error"
             ></trader-state>
-
+            <div id="allocation">
+                    <div>
+                        <h4>Your Allocation</h4>
+                    </div>
+                    <div>Your Experimental Points: {{settledCash}}</div>
+                    <div>Your Assets: {{settledAssets}}</div>
+            </div>
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
@@ -128,15 +140,25 @@ class SingleAssetTextInterface extends PolymerElement {
                         on-order-accepted="_order_accepted"
                     ></order-list>
                 </div>
+            </div>
+            <div class="container" id="order-input">
                 <div>
-                    <order-enter-widget
-                        class="flex-fill"
-                        settled-assets="{{settledAssets}}"
-                        available-assets="{{availableAssets}}"
-                        settled-cash="{{settledCash}}"
-                        available-cash="{{availableCash}}"
-                        on-order-entered="_order_entered"
-                    ></order-enter-widget>
+                    <label for="bid_price_input">Price</label>
+                    <input id="bid_price_input" type="number" min="0">
+                    <label for="bid_volume_input">Volume</label>
+                    <input id="bid_volume_input" type="number" min="1">
+                    <div>
+                        <button type="button" on-click="_order_entered" value="bid">Enter Bid</button>
+                    </div>
+                </div>
+                <div>
+                    <label for="ask_price_input">Price</label>
+                    <input id="ask_price_input" type="number" min="0">
+                    <label for="ask_volume_input">Volume</label>
+                    <input id="ask_volume_input" type="number" min="1">
+                    <div>
+                        <button type="button" on-click="_order_entered" value="ask">Enter Ask</button>
+                    </div>
                 </div>
             </div>
             <div class="container" id="log-container">
@@ -164,12 +186,26 @@ class SingleAssetTextInterface extends PolymerElement {
 
     // triggered when this player enters an order
     _order_entered(event) {
-        const order = event.detail;
-        if (isNaN(order.price) || isNaN(order.volume)) {
+        const is_bid = event.target.value == 'bid';
+        let price, volume;
+        if (is_bid) {
+            price = parseInt(this.$.bid_price_input.value);
+            volume = parseInt(this.$.bid_volume_input.value);
+        }
+        else {
+            price = parseInt(this.$.ask_price_input.value);
+            volume = parseInt(this.$.ask_volume_input.value);
+        }
+        if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');
             return;
         }
-        this.$.trader_state.enter_order(order.price, order.volume, order.is_bid);
+        if (price<100 || price>300){
+            this.$.log.error('Invalid price entered');
+            return;
+        }
+        
+        this.$.trader_state.enter_order(price, volume, is_bid);
     }
 
     // triggered when this player cancels an order

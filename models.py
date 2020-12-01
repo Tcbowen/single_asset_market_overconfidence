@@ -14,11 +14,8 @@ import math
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
     players_per_group = None
-    num_rounds = 20 
-    ## sets the trading env (0=a, 1=b and c)
-    env = 0
-
-
+    num_rounds = 30 
+ 
     # the columns of the config CSV and their types
     # this dict is used by ConfigManager
     config_fields = {
@@ -26,6 +23,8 @@ class Constants(BaseConstants):
         'asset_endowment': int,
         'cash_endowment': int,
         'allow_short': bool,
+        'sig_a': int,
+        'env': int
     }
 
 
@@ -48,7 +47,7 @@ class Subsession(markets_models.Subsession):
         self.group_randomly()
 
         world_state_binomial = np.random.binomial(1, 0.5) 
-        self.set_signal(Constants.env)
+        self.set_signal(self.config.env)
 
         for player in self.get_players():
             ## set the world state for each player equal to the global state
@@ -88,7 +87,7 @@ class Subsession(markets_models.Subsession):
     #######################################################################
     def set_signal(self, env):
         if env == 0:
-            sig = random.choice([0, 1])## ramdomly chooses low or high for the round
+            sig = self.config.sig_a
             for p in self.get_players():
                 p.signal_nature = sig
         else:
@@ -291,7 +290,7 @@ class Player(markets_models.Player):
         L = self.Question_2_low
         U = self.Question_2_hi
 
-        if Constants.env==1:
+        if self.subsession.config.env==1:
             BU = self.BU_env_b(self.total_black_low, self.total_black_high)
         else:
             if self.signal_nature==1:

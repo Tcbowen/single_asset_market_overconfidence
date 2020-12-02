@@ -18,6 +18,6 @@ Config files are located in the "configs" directory. They're CSVs where each row
 * `asset_endowment` - the amount of asset each player is endowed with
 * `cash_endowment` - the amount of cash each player is endowed with
 * `allow_short` - either "true" or "false". if true, players are allowed to have negative cash and asset holdings
-* `sig_a` - the signal nature to be used in env a
+* `sig` - sets the singal nature for the round 
 * `env` - enviroment to be used 0==a, 1==b,c
 

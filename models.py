@@ -23,7 +23,7 @@ class Constants(BaseConstants):
         'asset_endowment': int,
         'cash_endowment': int,
         'allow_short': bool,
-        'sig_a': int,
+        'sig': int,
         'env': int
     }
 
@@ -37,14 +37,6 @@ class Subsession(markets_models.Subsession):
     def allow_short(self):
         return self.config.allow_short
     def creating_session(self):
-        group_matrix = []
-        players = self.get_players()
-        ppg = 1
-
-        for i in range(0, len(players), ppg):
-            group_matrix.append(players[i:i+ppg])
-        self.set_group_matrix(group_matrix)
-        self.group_randomly()
 
         world_state_binomial = np.random.binomial(1, 0.5) 
         self.set_signal(self.config.env)
@@ -87,16 +79,18 @@ class Subsession(markets_models.Subsession):
     #######################################################################
     def set_signal(self, env):
         if env == 0:
-            sig = self.config.sig_a
+            sig = self.config.sig
             for p in self.get_players():
                 p.signal_nature = sig
         else:
-            sig = itertools.cycle([0, 1])
-
-            for g in self.get_groups():
-                signal = next(sig)
-                for p in g.get_players():
-                    p.signal_nature = signal
+            sig = self.config.sig
+            i=0
+            for p in self.get_players():
+                if i%2==0:
+                    p.signal_nature = sig
+                else: 
+                    p.signal_nature = (1-sig)
+                i= i+1
     #######################################################################
     ### sets all profits players 
     ### player

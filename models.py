@@ -10,6 +10,7 @@ import numpy
 import itertools
 import numpy as np
 import math
+import os
 
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
@@ -247,6 +248,7 @@ class Player(markets_models.Player):
     Question_2_payoff = models.IntegerField()
     Question_3_payoff = models.IntegerField()
     payoff_from_assets = models.IntegerField()
+    shares = models.IntegerField()
 ## Questions 
     Question_1 = models.IntegerField(
         label='''
@@ -272,12 +274,12 @@ class Player(markets_models.Player):
     ### sets the proft for an indivdual player 
     #######################################################################
     def set_profit(self):
-        shares = list(self.settled_assets.values())[0]
+        self.shares = self.settled_assets['A']
         if self.world_state==1:
-            self.profit =  shares*300 - (self.subsession.config.cash_endowment+self.subsession.config.asset_endowment*300 - self.settled_cash)
+            self.profit =  (self.shares*300 -self.subsession.config.asset_endowment*300 ) + (self.settled_cash - self.subsession.config.cash_endowment)
              ## bad state
         else:
-           self.profit =  shares*100 - (self.subsession.config.cash_endowment+self.subsession.config.asset_endowment*100 - self.settled_cash) 
+           self.profit =  (self.shares*100-self.subsession.config.asset_endowment*100) + (self.settled_cash - self.subsession.config.cash_endowment)
     #######################################################################
     ### sets the proft for an indivdual player 
     #######################################################################

@@ -64,6 +64,7 @@ class Results(Page):
             'Question_1_pay': self.player.Question_1_payoff,
             'Question_2_pay': self.player.Question_2_payoff,
             'Question_3_pay': self.player.Question_3_payoff,
+            'payoff_from_assets': self.player.payoff_from_assets,
             'total_pay':self.player.total_payoff,
             'state': state,
             'shares': self.player.shares

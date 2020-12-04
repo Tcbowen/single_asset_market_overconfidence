@@ -276,10 +276,10 @@ class Player(markets_models.Player):
     def set_profit(self):
         self.shares = self.settled_assets['A']
         if self.world_state==1:
-            self.profit =  (self.shares*300 -self.subsession.config.asset_endowment*300 ) + (self.settled_cash - self.subsession.config.cash_endowment)
+            self.profit =  self.shares*300 + (self.settled_cash - self.subsession.config.cash_endowment)
              ## bad state
         else:
-           self.profit =  (self.shares*100-self.subsession.config.asset_endowment*100) + (self.settled_cash - self.subsession.config.cash_endowment)
+           self.profit =  self.shares*100 + (self.settled_cash - self.subsession.config.cash_endowment)
     #######################################################################
     ### sets the proft for an indivdual player 
     #######################################################################
@@ -322,6 +322,11 @@ class Player(markets_models.Player):
         ##R is the reported belief
         R = self.Question_3
         self.Question_3_payoff= (int) (100 - (math.pow((C - R),2)))
-
+        ## payoff from assets (new wealth )
+        if self.world_state==1:
+            o_wealth = 300*self.subsession.config.asset_endowment
+        else:
+            o_wealth = 100*self.subsession.config.asset_endowment
+        self.payoff_from_assets = self.profit - o_wealth
         ## set total payoff ###############################
-        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.profit
+        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.payoff_from_assets

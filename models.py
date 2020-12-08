@@ -169,6 +169,8 @@ class Subsession(markets_models.Subsession):
         return total_black
 
 class Group(markets_models.Group):
+    def period_length(self):
+        return 120
 
     def _on_enter_event(self, event):
         '''handle an enter message sent from the frontend

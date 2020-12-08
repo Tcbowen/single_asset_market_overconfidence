@@ -4,6 +4,7 @@ from otree.api import (
 from otree_markets import models as markets_models
 from otree_markets.exchange.base import Order, OrderStatusEnum
 from .configmanager import ConfigManager
+from itertools import chain
 
 import random
 import numpy
@@ -38,14 +39,14 @@ class Subsession(markets_models.Subsession):
     def allow_short(self):
         return self.config.allow_short
     def creating_session(self):
-        group_matrix = []
-        players = self.get_players()
-        ppg = 1
+        # group_matrix = []
+        # players = self.get_players()
+        # ppg = 1
 
-        for i in range(0, len(players), ppg):
-            group_matrix.append(players[i:i+ppg])
-        self.set_group_matrix(group_matrix)
-        self.group_randomly()
+        # for i in range(0, len(players), ppg):
+        #     group_matrix.append(players[i:i+ppg])
+        # self.set_group_matrix(group_matrix)
+        # self.group_randomly()
 
         world_state_binomial = np.random.binomial(1, 0.5) 
         self.set_signal(Constants.env)
@@ -172,7 +173,9 @@ class Group(markets_models.Group):
     def _on_enter_event(self, event):
         '''handle an enter message sent from the frontend
         
-        first check to see if the new order would cross your own order, sending an error if it does
+        first check to see if the new order would cross your own order, sending an error if it does.
+        this isn't a proper check to see whether it would cross your own order, as it only checks the best
+        opposite-side order.
         '''
         enter_msg = event.value
         asset_name = enter_msg['asset_name'] if enter_msg['asset_name'] else markets_models.SINGLE_ASSET_NAME
@@ -188,25 +191,34 @@ class Group(markets_models.Group):
             if best_bid and best_bid.pcode == enter_msg['pcode'] and enter_msg['price'] <= best_bid.price:
                 self._send_error(enter_msg['pcode'], 'Cannot enter an ask that crosses your own bid')
                 return
-        super()._on_enter_event(event)
 
-    def confirm_enter(self, order):
-        exchange = order.exchange
+        player = self.get_player(enter_msg['pcode'])
+        if player.check_available(enter_msg['is_bid'], enter_msg['price'], enter_msg['volume'], asset_name):
+            self.try_cancel_active_order(enter_msg['pcode'], enter_msg['is_bid'], asset_name)
+        
+        super()._on_enter_event(event)
+    
+    def _on_accept_event(self, event):
+        accepted_order_dict = event.value
+        asset_name = accepted_order_dict['asset_name'] if accepted_order_dict['asset_name'] else markets_models.SINGLE_ASSET_NAME
+
+        sender_pcode = event.participant.code
+        player = self.get_player(sender_pcode)
+
+        if player.check_available(not accepted_order_dict['is_bid'], accepted_order_dict['price'], accepted_order_dict['volume'], accepted_order_dict['asset_name']):
+            self.try_cancel_active_order(sender_pcode, not accepted_order_dict['is_bid'], asset_name)
+        
+        super()._on_accept_event(event)
+   
+    def try_cancel_active_order(self, pcode, is_bid, asset_name):
+        exchange = self.exchanges.get(asset_name=asset_name)
         try:
-            # query for active orders in the same exchange as the new order, from the same player
-            old_order = (
-                exchange.orders
-                    .filter(pcode=order.pcode, is_bid=order.is_bid, status=OrderStatusEnum.ACTIVE)
-                    .exclude(id=order.id)
-                    .get()
-            )
+            old_order = exchange.orders.get(pcode=pcode, is_bid=is_bid, status=OrderStatusEnum.ACTIVE)
         except Order.DoesNotExist: 
             pass
         else:
-            # if another order exists, cancel it
             exchange.cancel_order(old_order.id)
 
-        super().confirm_enter(order)
 
 class Player(markets_models.Player):
 

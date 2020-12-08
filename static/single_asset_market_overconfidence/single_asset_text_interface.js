@@ -179,8 +179,8 @@ class SingleAssetTextInterface extends PolymerElement {
         this.orderFormatter = order => {
             return `${order.price} / ${order.volume}`
         }
-        this.tradeFormatter = trade => {
-            return `${trade.taking_order.price} / ${trade.taking_order.traded_volume}`;
+        this.tradeFormatter = (making_order, taking_order)=> {
+            return `${making_order.price} / ${making_order.traded_volume}`;
         };
     }
 

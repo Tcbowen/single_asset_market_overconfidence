@@ -189,16 +189,11 @@ class Group(markets_models.Group):
                 return
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
-        super()._on_enter_event(event)
-        
-    def confirm_enter(self, order):
-        exchange = order.exchange
-
         player = self.get_player(enter_msg['pcode'])
         if player.check_available(enter_msg['is_bid'], enter_msg['price'], enter_msg['volume'], asset_name):
             self.try_cancel_active_order(enter_msg['pcode'], enter_msg['is_bid'], asset_name)
-        
         super()._on_enter_event(event)
+        
     
     def _on_accept_event(self, event):
         accepted_order_dict = event.value
@@ -220,7 +215,7 @@ class Group(markets_models.Group):
             pass
         else:
             exchange.cancel_order(old_order.id)
-        super().confirm_enter(order)
+    
 
 class Player(markets_models.Player):
 

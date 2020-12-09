@@ -221,7 +221,6 @@ class Group(markets_models.Group):
         else:
             exchange.cancel_order(old_order.id)
         super().confirm_enter(order)
-    
 
 class Player(markets_models.Player):
 

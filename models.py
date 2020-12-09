@@ -14,7 +14,7 @@ import os
 
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
-    players_per_group = None
+    players_per_group = 2
     num_rounds = 30 
  
     # the columns of the config CSV and their types

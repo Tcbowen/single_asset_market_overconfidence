@@ -1,7 +1,8 @@
 from otree_markets.pages import BaseMarketPage
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from ._builtin import Page, WaitPage
-
+class Wait_for_trading(WaitPage):
+    wait_for_all_groups = True
 class Market(BaseMarketPage): 
     def get_timeout_seconds(self):
         return self.group.get_remaining_time()
@@ -71,4 +72,4 @@ class Results(Page):
         }
 
 
-page_sequence = [Market, Survey, Wait, Results]
+page_sequence = [Wait_for_trading, Market, Survey, Wait, Results]

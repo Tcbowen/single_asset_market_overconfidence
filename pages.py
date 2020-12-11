@@ -13,6 +13,7 @@ class Market(BaseMarketPage):
         img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
 
         return {
+            'round_num':self.subsession.round_number,
             'signal1black': self.player.signal1_black,
             'signal1white': self.player.signal1_white,
             'img_url': img_url,
@@ -61,11 +62,10 @@ class Results(Page):
             state="Bad"
 
         return {
-            'profit': self.player.profit,
             'Question_1_pay': self.player.Question_1_payoff,
             'Question_2_pay': self.player.Question_2_payoff,
             'Question_3_pay': self.player.Question_3_payoff,
-            'payoff_from_assets': self.player.payoff_from_assets,
+            'new_wealth': self.player.profit,
             'total_pay':self.player.total_payoff,
             'state': state,
             'shares': self.player.shares

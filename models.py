@@ -268,11 +268,11 @@ class Player(markets_models.Player):
 
     Question_2_low = models.IntegerField(
         label='''
-        (Lower Bound):
+        (Lower Bound)
         '''
     )
     Question_2_hi = models.IntegerField(label='''
-        (Upper Bound):
+        (Upper Bound)
         ''')
 
     Question_3 = models.IntegerField(

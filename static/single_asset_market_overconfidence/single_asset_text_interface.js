@@ -143,19 +143,15 @@ class SingleAssetTextInterface extends PolymerElement {
             </div>
             <div class="container" id="order-input">
                 <div>
-                    <label for="bid_price_input">Price</label>
+                    <label for="bid_price_input">Bid Price</label>
                     <input id="bid_price_input" type="number" min="0">
-                    <label for="bid_volume_input">Volume</label>
-                    <input id="bid_volume_input" type="number" min="1">
                     <div>
                         <button type="button" on-click="_order_entered" value="bid">Enter Bid</button>
                     </div>
                 </div>
                 <div>
-                    <label for="ask_price_input">Price</label>
+                    <label for="ask_price_input">Ask Price</label>
                     <input id="ask_price_input" type="number" min="0">
-                    <label for="ask_volume_input">Volume</label>
-                    <input id="ask_volume_input" type="number" min="1">
                     <div>
                         <button type="button" on-click="_order_entered" value="ask">Enter Ask</button>
                     </div>
@@ -190,11 +186,11 @@ class SingleAssetTextInterface extends PolymerElement {
         let price, volume;
         if (is_bid) {
             price = parseInt(this.$.bid_price_input.value);
-            volume = parseInt(this.$.bid_volume_input.value);
+            volume = 1;
         }
         else {
             price = parseInt(this.$.ask_price_input.value);
-            volume = parseInt(this.$.ask_volume_input.value);
+            volume = 1;
         }
         if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');
@@ -228,7 +224,7 @@ class SingleAssetTextInterface extends PolymerElement {
         if (order.pcode == this.pcode)
             return;
 
-        this.$.modal.modal_text = `Do you want to ${order.is_bid ? 'buy' : 'sell'} for $${order.price}?`
+        this.$.modal.modal_text = `Do you want to ${order.is_bid ? 'sell' : 'buy'} for $${order.price}?`
         this.$.modal.on_close_callback = (accepted) => {
             if (!accepted)
                 return;

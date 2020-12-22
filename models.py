@@ -255,27 +255,49 @@ class Player(markets_models.Player):
     total_white = models.IntegerField()
     total_black_low = models.IntegerField()
     total_black_high = models.IntegerField()
-    Question_1_payoff = models.IntegerField()
-    Question_2_payoff = models.IntegerField()
-    Question_3_payoff = models.IntegerField()
+    Question_1_payoff_pre = models.IntegerField()
+    Question_2_payoff_pre = models.IntegerField()
+    Question_3_payoff_pre = models.IntegerField()
+    Question_1_payoff_post = models.IntegerField()
+    Question_2_payoff_post = models.IntegerField()
+    Question_3_payoff_post = models.IntegerField()
     profit = models.IntegerField()
     shares = models.IntegerField()
-## Questions 
-    Question_1 = models.IntegerField(
+## Questions Pre
+    Question_1_pre = models.IntegerField(
         label='''
         Your answer:'''
     )
 
-    Question_2_low = models.IntegerField(
+    Question_2_low_pre = models.IntegerField(
+        label='''
+        (Lower Bound)'''
+    )
+    Question_2_hi_pre = models.IntegerField(
+        label='''
+        (Upper Bound)'''
+    )
+    Question_3_pre = models.IntegerField(
+        label='''
+        Enter a number betweeen 100 and 300.'''
+    )
+## Questions Post 
+    Question_1_post = models.IntegerField(
+        label='''
+        Your answer:'''
+    )
+
+    Question_2_low_post= models.IntegerField(
         label='''
         (Lower Bound)
         '''
     )
-    Question_2_hi = models.IntegerField(label='''
+    Question_2_hi_post = models.IntegerField(
+        label='''
         (Upper Bound)
         ''')
 
-    Question_3 = models.IntegerField(
+    Question_3_post = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
          Please choose one of the following.
@@ -304,14 +326,14 @@ class Player(markets_models.Player):
         p_n = random.randint(0,99)
         n_asset_binomail = np.random.binomial(1, p_n/100)
         n_asset_value = n_asset_binomail*200 +100
-        if self.Question_1>p_n:
-            self.Question_1_payoff = self.world_state*200 +100
+        if self.Question_1_post>p_n:
+            self.Question_1_payoff_post_ = self.world_state*200 +100
         else:
-            self.Question_1_payoff = n_asset_value
+            self.Question_1_payoff_post = n_asset_value
         #########################Question 2#################################
 
-        L = self.Question_2_low
-        U = self.Question_2_hi
+        L = self.Question_2_low_post
+        U = self.Question_2_low_post
 
         if self.subsession.config.env==1:
             BU = self.BU_env_b(self.total_black_low, self.total_black_high)
@@ -323,15 +345,15 @@ class Player(markets_models.Player):
                 BU = self.BU_low(self.total_black, self.total_white)
 
         if BU>(L/100) and BU<(U/100):
-            self.Question_2_payoff= (100-(U-L))
+            self.Question_2_payoff_post= (100-(U-L))
         else:
-            self.Question_2_payoff= 0
+            self.Question_2_payoff_post= 0
        ################### ### question 3###################################
 
         ##C correct ranking
         C = self.ranking
         ##R is the reported belief
-        R = self.Question_3
-        self.Question_3_payoff= (int) (100 - (math.pow((C - R),2)))
+        R = self.Question_3_post
+        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
         ## set total payoff ###############################
-        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.profit
+        self.total_payoff = (int)((self.Question_1_payoff_post + self.Question_2_payoff_post +self.Question_3_payoff_post)/3) + self.profit

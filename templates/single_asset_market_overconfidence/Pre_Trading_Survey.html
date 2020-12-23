@@ -6,31 +6,25 @@
 {% endblock %}
 {% block styles %}
 <style>
+.survey-container{
+    display: flex;
+}
 .signal {
-	float: right;
-	width: 30%;
-	text-align: center;
+    flex: 35%;
+}
+.signal img {
+    max-width: 100%;
+    height: auto;
 }
 .forms {
- 	float: left;
-	width: 70%;
+    flex: 65%;
 }
 </style>
-</head>
 {% endblock %} 
 {% block content %}
 <body>
-<div class = "signal">
-<img src="{{img_sig_url}}"/>
-<b>
-<br>Your private signal</br>
+<div class = "survey-container">
 
-<br style="font-size:300%"> {{ signal1black }} Black Balls and {{ signal1white }} White Balls.</br>
-<br>
-<img src="{{img_url}}"/>
-</br>
-</b>
-</div>
 <div class="forms"> 
 	<div> 
 		<br>
@@ -62,6 +56,16 @@
     </div>
     {% next_button %}
 </div>
+    <div class = "signal">
+        <img src="{{img_sig_url}}"/>
+            <b>
+                <br>Your private signal</br>
+                <br style="font-size:300%"> {{ signal1black }} Black Balls and {{ signal1white }} White Balls.</br>
+                <br>
+                <img src="{{img_url}}"/>
+                </br>
+            </b>
+    </div>
 </body>
 {% endblock %}
 

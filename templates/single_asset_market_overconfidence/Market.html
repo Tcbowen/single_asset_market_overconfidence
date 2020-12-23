@@ -16,19 +16,15 @@
 			display: none;
 		}
 		.market-container {
-			padding-top: 20px;
-			width: 100vw;
-			margin-left: 50%;
-			transform: translateX(-50%);
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
 		.market {
-			flex: 0 1 1000px;
+			flex: 65%;
 		}
 		.signal {
-			flex: 0 1 400px;
+			flex: 35%;
 		}
 		.signal img {
 			max-width: 100%;
@@ -44,7 +40,7 @@
 
 {% block content %}
 <div class ="round_num">
-Period Number: {{round_num}}
+	Period Number: {{round_num}}
 </div>
 	<disable-interface-overlay> 
 	</disable-interface-overlay>

@@ -105,9 +105,6 @@ class SingleAssetTextInterface extends PolymerElement {
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
                     <order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
@@ -118,9 +115,6 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
                 <div>
                     <h3>Trades</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
                     <trade-list
                         class="flex-fill"
                         display-format="[[ tradeFormatter ]]"
@@ -129,9 +123,6 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
                 <div>
                     <h3>Asks</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
                     <order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
@@ -173,10 +164,10 @@ class SingleAssetTextInterface extends PolymerElement {
         super.ready();
         this.pcode = this.$.constants.participantCode;
         this.orderFormatter = order => {
-            return `${order.price} / ${order.volume}`
+            return `${order.price}`
         }
         this.tradeFormatter = (making_order, taking_order)=> {
-            return `${making_order.price} / ${making_order.traded_volume}`;
+            return `${making_order.price}`;
         };
     }
 

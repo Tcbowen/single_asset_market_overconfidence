@@ -5,54 +5,82 @@ Your Results
 {% endblock %}
 {% block styles %}
 <style>
-
-	.text {
-		text-align: center;
-		font-size: 150%;
-		font-family: verdana;
-	}
+.results-container{
+    display: flex;
+}
+.questions {
+	flex: 40%;
+}
+.payoffs {
+ 	flex: 60%;
+}
+.state{
+	flex: 80%;
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
 
 </style>
 
 {% endblock %}
 {% block content %}
-
-	<div class="text">
-
-		<br>
-			The true world state for this period: {{state}}
-		</br>
-		<br>
-			Shares: {{shares}}
-		</br>
-
-		<br>
+	<div class = "results-container">
+		<div class = "state">
+			<div class = "text-header">
+				<br>
+					The true world state for this period is {{state}} and you own {{shares}} shares at the end of the period. 
+				</br>
+			</div>
+		</div>
+	</div>
+	<div class="results-container">	
+		<div class ="questions">
+			<div class = "text-header">
+				<br>
+					Payoff From Questions
+				</br>
+			</div>
+			<div class = "text-results">
+				<br>
+					Question 1: {{Question_1_pay}}
+				</br>
+				<br>
+					Question 2: {{Question_2_pay}}
+				</br>
+				<br>
+					Question 3: {{Question_3_pay}}
+				</br>
+			</div>
+		</div>
+		<div class = "payoffs">
+			<div class = "text-header">
+				<br>
+					Total payoff for this period: {{total_pay}}
+				</br>
+			</div>
+			<div class = "text-results">
+				<br>
+					Total payoff for this period = Your payoff from trading + (Payoff from question 1 + Payoff from question 2 + Payoff from question 3)/3
+				</br>
+			</div>
+			<div class = "text-header">
+			<br>
 			Your payoff from trading: {{new_wealth}}
-		</br>
-
-		<br>
-			Payoff from trading = Experimental Points + Assets value (That you still hold at the end of the period)
-		</br>
-
-		<br>
-			Payoff from question 1: {{Question_1_pay}}
-		</br>
-
-		<br>
-			Payoff from question 2: {{Question_2_pay}}
-		</br>
-
-		<br>
-			Payoff from question 3: {{Question_3_pay}}
-		</br>
-
-		<br>
-			Total payoff for this period: {{total_pay}}
-		</br>
-
-		<br>
-			Total payoff for this period = Your payoff from trading + (Payoff from question 1 + Payoff from question 2 + Payoff from question 3)/3
-		</br>
-
+			</br>
+			</div>
+			<div class = "text-results">
+			<br>
+				Payoff from trading = Experimental Points + Assets value (That you still hold at the end of the period)
+			</br>
+			</div>
+		</div>
 	</div>
 {% endblock %}

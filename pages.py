@@ -56,7 +56,7 @@ class Post_Trading_Survey(Page):
             
             def before_next_page(self):
                 self.player.save()
-                
+
             img_sig_url = '/static/single_asset_market_overconfidence/signal_{}.jpg'.format(self.player.signal_nature)
             img_url = '/static/single_asset_market_overconfidence/balls2/balls_{}.jpg'.format(self.player.signal1_black)
 
@@ -77,16 +77,16 @@ class Wait(WaitPage):
     
 class Results(Page):
 
-    timeout_seconds = 15
+    timeout_seconds = 60
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
 
     def vars_for_template(self): 
         if self.player.world_state==1:
-            state="Good"
+            state="good"
         elif self.player.world_state==0:
-            state="Bad"
+            state="bad"
 
         return {
             'Question_1_pay': self.player.Question_1_payoff_post,

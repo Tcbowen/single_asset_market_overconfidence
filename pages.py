@@ -77,7 +77,7 @@ class Wait(WaitPage):
     
 class Results(Page):
 
-    timeout_seconds = 60
+    timeout_seconds = 20
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
@@ -99,4 +99,4 @@ class Results(Page):
         }
 
 
-page_sequence = [Wait_for_trading,Pre_trading_Survey, Market, Post_Trading_Survey, Wait, Results]
+page_sequence = [Pre_trading_Survey, Wait_for_trading, Market, Post_Trading_Survey, Wait, Results]

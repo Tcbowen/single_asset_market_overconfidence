@@ -3,7 +3,7 @@ import '/static/otree-redwood/src/redwood-channel/redwood-channel.js';
 import '/static/otree-redwood/src/otree-constants/otree-constants.js';
 
 import '/static/otree_markets/trader_state.js'
-import '/static/otree_markets/order_list.js';
+import './colored_order_list.js';
 import '/static/otree_markets/trade_list.js';
 import '/static/otree_markets/simple_modal.js';
 import '/static/otree_markets/event_log.js';
@@ -49,7 +49,6 @@ class SingleAssetTextInterface extends PolymerElement {
                 #main-container > div {
                     flex: 0 1 20%;
                 }
-
                 #log-container {
                     height: 20vh;
                 }
@@ -59,7 +58,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 #container_orders > div {
                     height: 15vh;
                 }
-                order-list, trade-list, event-log {
+                colored-order-list, trade-list, event-log {
                     border: 1px solid black;
                 }
                 .order-info-header {
@@ -105,13 +104,13 @@ class SingleAssetTextInterface extends PolymerElement {
             <div class="container" id="main-container">
                 <div>
                     <h3>Bids</h3>
-                    <order-list
+                    <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
                         orders="[[bids]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
-                    ></order-list>
+                    ></colored-order-list>
                 </div>
                 <div>
                     <h3>Trades</h3>
@@ -123,13 +122,13 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
                 <div>
                     <h3>Asks</h3>
-                    <order-list
+                    <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
                         orders="[[asks]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
-                    ></order-list>
+                    ></colored-order-list>
                 </div>
             </div>
             <div class="container" id="order-input">

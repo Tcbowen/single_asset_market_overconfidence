@@ -224,16 +224,6 @@ class SingleAssetTextInterface extends PolymerElement {
         this.$.modal.show();
     }
 
-    // react to the backend confirming that a trade occurred
-    _confirm_trade(event) {
-        const trade = event.detail;
-        const all_orders = trade.making_orders.concat([trade.taking_order]);
-        for (let order of all_orders) {
-            if (order.pcode == this.pcode)
-                this.$.log.info(`You ${order.is_bid ? 'bought' : 'sold'} ${order.traded_volume} ${order.traded_volume == 1 ? 'unit' : 'units'}`);
-        }
-    }
-
     // react to the backend confirming that an order was canceled
     _confirm_cancel(event) {
         const order = event.detail;

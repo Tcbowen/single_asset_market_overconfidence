@@ -4,7 +4,7 @@ import '/static/otree-redwood/src/otree-constants/otree-constants.js';
 
 import '/static/otree_markets/trader_state.js'
 import './colored_order_list.js';
-import '/static/otree_markets/trade_list.js';
+import './colored_trade_list.js';
 import '/static/otree_markets/simple_modal.js';
 import '/static/otree_markets/event_log.js';
 
@@ -58,7 +58,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 #container_orders > div {
                     height: 15vh;
                 }
-                colored-order-list, trade-list, event-log {
+                colored-order-list, colored-trade-list, event-log {
                     border: 1px solid black;
                 }
                 .order-info-header {
@@ -114,11 +114,11 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
                 <div>
                     <h3>Trades</h3>
-                    <trade-list
+                    <colored-trade-list
                         class="flex-fill"
                         display-format="[[ tradeFormatter ]]"
                         trades="[[trades]]"
-                    ></trade-list>
+                    ></colored-trade-list>
                 </div>
                 <div>
                     <h3>Asks</h3>

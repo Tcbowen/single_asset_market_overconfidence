@@ -173,6 +173,7 @@ class Group(markets_models.Group):
         this isn't a proper check to see whether it would cross your own order, as it only checks the best
         opposite-side order.
         '''
+
         enter_msg = event.value
         asset_name = enter_msg['asset_name'] if enter_msg['asset_name'] else markets_models.SINGLE_ASSET_NAME
 
@@ -190,6 +191,9 @@ class Group(markets_models.Group):
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
         player = self.get_player(enter_msg['pcode'])
+        if player.settled_assets['A'] > 10:
+            self._send_error(enter_msg['pcode'], 'you cannot purchase more than 8 assets per round')
+            return
         if player.check_available(enter_msg['is_bid'], enter_msg['price'], enter_msg['volume'], asset_name):
             self.try_cancel_active_order(enter_msg['pcode'], enter_msg['is_bid'], asset_name)
         super()._on_enter_event(event)
@@ -262,6 +266,9 @@ class Player(markets_models.Player):
     Question_2_payoff_post = models.IntegerField()
     Question_3_payoff_post = models.IntegerField()
     profit = models.IntegerField()
+    new_wealth = models.IntegerField()
+    old_wealth = models.IntegerField()
+    payoff_from_trading = models.IntegerField()
     shares = models.IntegerField()
 ## Questions Pre
     Question_1_pre = models.IntegerField(
@@ -309,10 +316,12 @@ class Player(markets_models.Player):
     def set_profit(self):
         self.shares = self.settled_assets['A']
         if self.world_state==1:
-            self.profit =  self.shares*300 + self.settled_cash
+            self.new_wealth =  self.shares*300 + self.settled_cash
              ## bad state
         else:
-           self.profit=  self.shares*100 + self.settled_cash
+           self.new_wealth =  self.shares*100 + self.settled_cash
+        self.old_wealth = self.subsession.config.cash_endowment
+        self.profit = self.new_wealth - self.old_wealth
     #######################################################################
     ### sets the proft for an indivdual player 
     #######################################################################
@@ -356,4 +365,7 @@ class Player(markets_models.Player):
         R = self.Question_3_post
         self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
         ## set total payoff ###############################
-        self.total_payoff = (int)((self.Question_1_payoff_post + self.Question_2_payoff_post +self.Question_3_payoff_post)/3) + self.profit
+        self.payoff_from_trading = (500+self.profit)
+        self.total_payoff = (int)((self.Question_1_payoff_post + self.Question_2_payoff_post +self.Question_3_payoff_post)/3) + self.payoff_from_trading
+        if self.total_payoff > self.payoff:
+            self.payoff = (self.total_payoff * .0017)

@@ -92,7 +92,10 @@ class Results(Page):
             'Question_1_pay': self.player.Question_1_payoff_post,
             'Question_2_pay': self.player.Question_2_payoff_post,
             'Question_3_pay': self.player.Question_3_payoff_post,
-            'new_wealth': self.player.profit,
+            'profit': self.player.profit,
+            'payoff_from_trading': self.player.payoff_from_trading,
+            'new_wealth': self.player.new_wealth,
+            'old_wealth':self.player.old_wealth,
             'total_pay':self.player.total_payoff,
             'state': state,
             'shares': self.player.shares

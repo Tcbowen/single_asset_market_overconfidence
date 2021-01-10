@@ -26,23 +26,16 @@
 <div class = "survey-container">
     <div class="forms"> 
     	<div> 
-    		<br>
-    			After the trading, you should have a better idea of what the true state of the world is in this
-    	        trading period. Please use the information on the right-hand side and also what you’ve learned from the market to answer the following questions. 
-        	</br>
         	<br>
-            	What is the probability( out of 100) that you believe the true state is 'G'?
+            	What is the probability (out of 100) that you believe the true state is 'G'?
             </br>
             {% formfield player.Question_1_post %}
         </div>
     	<div> 
     		<br>
-    	        Please provide an upper bound and a lower bound, such that you expect the computer's prediction to lie within these two values with 90% probability.
+    	        Of 100 times that the computer sends out the same signal as yours, guess how many times the true state is G? Please specify a lower bound L and an upper bound U that you expect the true number to lie within these two values with 90% probability.
         	</br>
-        	<br>
-            	Please report your lower bound and upper bound below. 
-            </br>
-           		your answer:
+           		Your answer:
             	{% formfield player.Question_2_low_post %}
             	{% formfield player.Question_2_hi_post%}
         <div>
@@ -55,8 +48,7 @@
         </div>
             <div> 
             <br>
-                How would you rank your own performance in this trading period? In other words, how would you
-                rank your own payoff relative to the other traders in this trading period? 
+                Of the 8 (yourself included) people trading in this period, how would you rank your own payoff (payoff from trading ONLY) from this trading period compared with other traders?
             </br>
             <br>
             {% formfield player.Question_4_post %}

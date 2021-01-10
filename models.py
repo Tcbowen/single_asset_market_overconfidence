@@ -337,18 +337,22 @@ class Player(markets_models.Player):
     #######################################################################
     def set_total_payoff(self):
         ###################question 1 post#####################################
-        p_n = random.randint(0,99)
-        n_asset_binomail = np.random.binomial(1, p_n/100)
-        n_asset_value = n_asset_binomail*200 +100
-        if self.Question_1_post>p_n:
+        p_n_pre = random.randint(0,99)
+        n_asset_binomail_pre = np.random.binomial(1, p_n_pre/100)
+        n_asset_value_pre = n_asset_binomail_pre*200 +100
+        #######################################################################
+        p_n_post = random.randint(0,99)
+        n_asset_binomail_post = np.random.binomial(1, p_n_post/100)
+        n_asset_value_post = n_asset_binomail_post*200 +100
+        if self.Question_1_post>p_n_post:
             self.Question_1_payoff_post = self.world_state*200 +100
         else:
-            self.Question_1_payoff_post = n_asset_value
+            self.Question_1_payoff_post = n_asset_value_post
         ################question 1 pre#########################################
-        if self.Question_1_pre>p_n:
+        if self.Question_1_pre>p_n_pre:
             self.Question_1_payoff_pre = self.world_state*200 +100
         else:
-            self.Question_1_payoff_pre = n_asset_value
+            self.Question_1_payoff_pre = n_asset_value_pre
         #########################Question 2 post#################################
 
         L = self.Question_2_low_post
@@ -390,9 +394,9 @@ class Player(markets_models.Player):
             self.Question_3_payoff_post = self.world_state*200 +100
         else:
             self.Question_3_payoff_post = p_n
-        ################### ### question 3 post###################################
+        ################### ### question 3 pre###################################
         p_n = random.randint(100,300)
-        if self.Question_3_post>p_n:
+        if self.Question_3_pre>p_n:
             self.Question_3_payoff_pre = self.world_state*200 +100
         else:
             self.Question_3_payoff_pre = p_n
@@ -400,7 +404,7 @@ class Player(markets_models.Player):
         ##C correct ranking
         C = self.ranking
         ##R is the reported belief
-        R = self.Question_3_post
+        R = self.Question_4_post
         self.Question_4_payoff_post= (int) (100 - (math.pow((C - R),2)))
         ## set total payoff ###############################
         self.payoff_from_trading = (500+self.profit)

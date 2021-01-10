@@ -45,13 +45,12 @@
        		your answer:
         	{% formfield player.Question_2_low_pre %}
         	{% formfield player.Question_2_hi_pre %}
-    </div>
-    	<div> 
-		<br>
-			Given the private signal, how much do you think this asset is worth to you?
-    	</br>
-    	<br>
-        {% formfield player.Question_3_pre %}
+    <div>
+            <br>
+                Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
+            </br>
+            <br>
+                {% formfield player.Question_3_pre %}
         </br>
     </div>
     {% next_button %}

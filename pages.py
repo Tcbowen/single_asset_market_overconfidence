@@ -68,7 +68,7 @@ class Post_Trading_Survey(Page):
             }
 
     form_model = 'player'
-    form_fields = ['Question_1_post', 'Question_2_low_post','Question_2_hi_post', 'Question_3_post']
+    form_fields = ['Question_1_post', 'Question_2_low_post','Question_2_hi_post', 'Question_3_post','Question_4_post']
 
 class Wait(WaitPage):
     wait_for_all_groups = True
@@ -77,7 +77,7 @@ class Wait(WaitPage):
     
 class Results(Page):
 
-    timeout_seconds = 20
+    timeout_seconds = 30
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()
@@ -89,9 +89,13 @@ class Results(Page):
             state="bad"
 
         return {
-            'Question_1_pay': self.player.Question_1_payoff_post,
-            'Question_2_pay': self.player.Question_2_payoff_post,
-            'Question_3_pay': self.player.Question_3_payoff_post,
+            'Question_1_pay_post': self.player.Question_1_payoff_post,
+            'Question_2_pay_post': self.player.Question_2_payoff_post,
+            'Question_3_pay_post': self.player.Question_3_payoff_post,
+            'Question_4_pay_post': self.player.Question_4_payoff_post,
+            'Question_1_pay_pre': self.player.Question_1_payoff_pre,
+            'Question_2_pay_pre': self.player.Question_2_payoff_pre,
+            'Question_3_pay_pre': self.player.Question_3_payoff_pre,
             'profit': self.player.profit,
             'payoff_from_trading': self.player.payoff_from_trading,
             'new_wealth': self.player.new_wealth,

@@ -45,16 +45,24 @@
            		your answer:
             	{% formfield player.Question_2_low_post %}
             	{% formfield player.Question_2_hi_post%}
+        <div>
+            <br>
+                Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
+            </br>
+            <br>
+                {% formfield player.Question_3_post %}
+        </br>
         </div>
-        	<div> 
-    		<br>
-    			How would you rank your own performance in this trading period? In other words, how would you
-            	rank your own payoff relative to the other traders in this trading period? 
-        	</br>
-        	<br>
-            {% formfield player.Question_3_post %}
+            <div> 
+            <br>
+                How would you rank your own performance in this trading period? In other words, how would you
+                rank your own payoff relative to the other traders in this trading period? 
+            </br>
+            <br>
+            {% formfield player.Question_4_post %}
             </br>
         </div>
+    </div>
         {% next_button %}
     </div>
      <div class = "signal">

@@ -265,11 +265,13 @@ class Player(markets_models.Player):
     Question_1_payoff_post = models.IntegerField()
     Question_2_payoff_post = models.IntegerField()
     Question_3_payoff_post = models.IntegerField()
+    Question_4_payoff_post = models.IntegerField()
     profit = models.IntegerField()
     new_wealth = models.IntegerField()
     old_wealth = models.IntegerField()
     payoff_from_trading = models.IntegerField()
     shares = models.IntegerField()
+    average_payoff = models.IntegerField()
 ## Questions Pre
     Question_1_pre = models.IntegerField(
         label='''
@@ -303,8 +305,11 @@ class Player(markets_models.Player):
         label='''
         (Upper Bound)
         ''')
-
     Question_3_post = models.IntegerField(
+        label='''
+        Enter a number betweeen 100 and 300.'''
+    )
+    Question_4_post = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
          Please choose one of the following.
@@ -331,15 +336,20 @@ class Player(markets_models.Player):
     ### calculates payoff
     #######################################################################
     def set_total_payoff(self):
-        ###################question 1#######################################
+        ###################question 1 post#####################################
         p_n = random.randint(0,99)
         n_asset_binomail = np.random.binomial(1, p_n/100)
         n_asset_value = n_asset_binomail*200 +100
         if self.Question_1_post>p_n:
-            self.Question_1_payoff_post_ = self.world_state*200 +100
+            self.Question_1_payoff_post = self.world_state*200 +100
         else:
             self.Question_1_payoff_post = n_asset_value
-        #########################Question 2#################################
+        ################question 1 pre#########################################
+        if self.Question_1_pre>p_n:
+            self.Question_1_payoff_pre = self.world_state*200 +100
+        else:
+            self.Question_1_payoff_pre = n_asset_value
+        #########################Question 2 post#################################
 
         L = self.Question_2_low_post
         U = self.Question_2_low_post
@@ -357,15 +367,43 @@ class Player(markets_models.Player):
             self.Question_2_payoff_post= (100-(U-L))
         else:
             self.Question_2_payoff_post= 0
-       ################### ### question 3###################################
+         #########################Question 2 pre#################################
+        L = self.Question_2_low_pre
+        U = self.Question_2_low_pre
 
+        if self.subsession.config.env==1:
+            BU = self.BU_env_b(self.total_black_low, self.total_black_high)
+        else:
+            if self.signal_nature==1:
+                BU = self.BU_hi(self.total_black, self.total_white)
+             ## bad state
+            else:
+                BU = self.BU_low(self.total_black, self.total_white)
+
+        if BU>(L/100) and BU<(U/100):
+            self.Question_2_payoff_pre= (100-(U-L))
+        else:
+            self.Question_2_payoff_pre= 0
+        ################### ### question 3 post###################################
+        p_n = random.randint(100,300)
+        if self.Question_3_post>p_n:
+            self.Question_3_payoff_post = self.world_state*200 +100
+        else:
+            self.Question_3_payoff_post = p_n
+        ################### ### question 3 post###################################
+        p_n = random.randint(100,300)
+        if self.Question_3_post>p_n:
+            self.Question_3_payoff_pre = self.world_state*200 +100
+        else:
+            self.Question_3_payoff_pre = p_n
+        ################### ### question 4 post###################################
         ##C correct ranking
         C = self.ranking
         ##R is the reported belief
         R = self.Question_3_post
-        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        self.Question_4_payoff_post= (int) (100 - (math.pow((C - R),2)))
         ## set total payoff ###############################
         self.payoff_from_trading = (500+self.profit)
-        self.total_payoff = (int)((self.Question_1_payoff_post + self.Question_2_payoff_post +self.Question_3_payoff_post)/3) + self.payoff_from_trading
-        if self.total_payoff > self.payoff:
+        self.total_payoff = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post + self.Question_2_payoff_post + self.Question_3_payoff_post + self.Question_4_post)/7) + self.payoff_from_trading
+        if (self.total_payoff*.0017)>self.payoff:
             self.payoff = (self.total_payoff * .0017)

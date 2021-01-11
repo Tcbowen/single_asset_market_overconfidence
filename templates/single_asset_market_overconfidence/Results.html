@@ -84,6 +84,22 @@ Your Results
 		</div>
 		<div class = "payoffs">
 			<div class = "text-header">
+			<br>
+			Your payoff from trading: {{payoff_from_trading}}
+			</br>
+			</div>
+			<div class = "text-results">
+			<br>
+				Payoff from trading = 500 + profits 
+			<br>
+				Profits = (new wealth - old wealth)
+			</br>
+			<br>
+				{{payoff_from_trading}} = {{new_wealth }} - {{old_wealth}} + 500
+			</br>
+			</br>
+			</div>
+			<div class = "text-header">
 				<br>
 					Total payoff for this period: {{total_pay}}
 				</br>
@@ -96,22 +112,7 @@ Your Results
 				Total payoff = {{payoff_from_trading}} + (1/7)({{Question_1_pay_pre}} + {{Question_2_pay_pre}} + {{Question_3_pay_pre}} + {{Question_1_pay_post}} + {{Question_2_pay_post}} + {{Question_3_pay_post}} + {{Question_4_pay_post}})
 				</br>
 			</div>
-			<div class = "text-header">
-			<br>
-			Your payoff from trading: {{payoff_from_trading}}
-			</br>
-			</div>
-			<div class = "text-results">
-			<br>
-				Payoff from trading = 500 + profits 
-			<br>
-				Profits = (new wealth - old wealth)
-			</br>
-			<br>
-				{{profit}} = {{new_wealth }} - {{old_wealth}}
-			</br>
-			</br>
-			</div>
+		
 		</div>
 	</div>
 {% endblock %}

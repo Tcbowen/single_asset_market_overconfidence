@@ -320,12 +320,15 @@ class Player(markets_models.Player):
     #######################################################################
     def set_profit(self):
         self.shares = self.settled_assets['A']
+        old_asset_value = 0
         if self.world_state==1:
             self.new_wealth =  self.shares*300 + self.settled_cash
+            old_asset_value = 300*self.subsession.config.asset_endowment
              ## bad state
         else:
            self.new_wealth =  self.shares*100 + self.settled_cash
-        self.old_wealth = self.subsession.config.cash_endowment
+           old_asset_value = 100*self.subsession.config.asset_endowment
+        self.old_wealth = self.subsession.config.cash_endowment + old_asset_value
         self.profit = self.new_wealth - self.old_wealth
     #######################################################################
     ### sets the proft for an indivdual player 

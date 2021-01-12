@@ -1,6 +1,9 @@
 import { html } from '/static/otree-redwood/node_modules/@polymer/polymer/polymer-element.js';
 import {TradeList} from '/static/otree_markets/trade_list.js';
 
+import '/static/otree-redwood/src/otree-constants/otree-constants.js';
+
+
 class ColoredTradeList extends TradeList{
 
 
@@ -38,8 +41,13 @@ class ColoredTradeList extends TradeList{
             </div>
         `;
     }
+    
+    ready() {
+        super.ready();
+        this.pcode = this.$.constants.participantCode;
+    }
    	_getTradeClass(trade) {
-        if (trade.taking_order.pcode == this.pcode || trade.making_orders.pcode == this.pcode)
+        if (trade.taking_order.pcode == this.pcode || trade.making_orders.some(order => order.pcode == this.pcode))
             return 'my-trade';
         else
             return 'other-trade';

@@ -4,7 +4,7 @@ from ._builtin import Page, WaitPage
 class Wait_for_trading(WaitPage):
     wait_for_all_groups = True
 
-class Pre_trading_Survey(Page):
+class Pre_Trading_Survey(Page):
     timeout_seconds = 30
     def before_next_page(self):
         if self.timeout_happened:
@@ -106,4 +106,4 @@ class Results(Page):
         }
 
 
-page_sequence = [Pre_trading_Survey, Wait_for_trading, Market, Post_Trading_Survey, Wait, Results]
+page_sequence = [Pre_Trading_Survey, Wait_for_trading, Market, Post_Trading_Survey, Wait, Results]

@@ -273,39 +273,39 @@ class Player(markets_models.Player):
     shares = models.IntegerField()
     average_payoff = models.IntegerField()
 ## Questions Pre
-    Question_1_pre = models.IntegerField(
+    Question_1_pre = models.IntegerField(min=0, max=100,
         label='''
         Your answer:'''
     )
 
-    Question_2_low_pre = models.IntegerField(
+    Question_2_low_pre = models.IntegerField(min=0, max=100,
         label='''
         (Lower Bound)'''
     )
-    Question_2_hi_pre = models.IntegerField(
+    Question_2_hi_pre = models.IntegerField(min=0, max=100,
         label='''
         (Upper Bound)'''
     )
-    Question_3_pre = models.IntegerField(
+    Question_3_pre = models.IntegerField(min=100, max=300,
         label='''
         Enter a number betweeen 100 and 300.'''
     )
 ## Questions Post 
-    Question_1_post = models.IntegerField(
+    Question_1_post = models.IntegerField(min=0, max=100,
         label='''
         Your answer:'''
     )
 
-    Question_2_low_post= models.IntegerField(
+    Question_2_low_post= models.IntegerField(min=0, max=100,
         label='''
         (Lower Bound)
         '''
     )
-    Question_2_hi_post = models.IntegerField(
+    Question_2_hi_post = models.IntegerField(min=0, max=100,
         label='''
         (Upper Bound)
         ''')
-    Question_3_post = models.IntegerField(
+    Question_3_post = models.IntegerField(min=100, max=300,
         label='''
         Enter a number betweeen 100 and 300.'''
     )

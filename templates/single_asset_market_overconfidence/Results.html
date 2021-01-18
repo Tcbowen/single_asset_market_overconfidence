@@ -9,10 +9,17 @@ Your Results
     display: flex;
 }
 .questions {
-	flex: 40%;
+	display: flex;
+	flex: 50%;
 }
-.payoffs {
- 	flex: 60%;
+.questions-pre {
+	flex: 50%;
+}
+.questions-post {
+	flex: 50%;
+}
+.payoffs-pre {
+ 	flex: 50%;
 }
 .state{
 	flex: 80%;
@@ -36,52 +43,56 @@ Your Results
 		<div class = "state">
 			<div class = "text-header">
 				<br>
-					The true world state for this period is {{state}} and you own {{shares}} shares at the end of the period. 
+					The true world state for this period is <b>{{state}}</b>
+				</br>
+				<br>
+					you own <b>{{shares}}</b> shares at the end of the period. 
 				</br>
 			</div>
 		</div>
 	</div>
 	<div class="results-container">	
 		<div class ="questions">
-			<div class = "text-header">
-				<br>
-					Payoff From Questions
-				</br>
-				<br>
-					Pre-Survey
-				</br>
+				<div class ="questions-pre">
+					<div class = "text-header">
+						<br>
+							Pre-Survey Answers
+						</br>
+					</div>
+					<div class = "text-results">
+						<br>
+							Question 1: {{Question_1_pay_pre}}
+						</br>
+						<br>
+							Question 2: {{Question_2_pay_pre}}
+						</br>
+						<br>
+							Question 3: {{Question_3_pay_pre}}
+						</br>
+					</div>
+				</div>
+				<div class = "questions-post">
+					<div class = "text-header">
+						<br>
+							Post-Survey Answers
+						</br>
+					</div>
+					<div class = "text-results">
+						<br>
+							Question 1: {{Question_1_pay_post}}
+						</br>
+						<br>
+							Question 2: {{Question_2_pay_post}}
+						</br>
+						<br>
+							Question 3: {{Question_3_pay_post}}
+						</br>
+						<br>
+							Question 4: {{Question_4_pay_post}}
+						</br>
+					</div>
+				</div>
 			</div>
-			<div class = "text-results">
-				<br>
-					Question 1: {{Question_1_pay_pre}}
-				</br>
-				<br>
-					Question 2: {{Question_2_pay_pre}}
-				</br>
-				<br>
-					Question 3: {{Question_3_pay_pre}}
-				</br>
-			</div>
-			<div class = "text-header">
-				<br>
-					Post-Survey
-				</br>
-			</div>
-			<div class = "text-results">
-				<br>
-					Question 1: {{Question_1_pay_post}}
-				</br>
-				<br>
-					Question 2: {{Question_2_pay_post}}
-				</br>
-				<br>
-					Question 3: {{Question_3_pay_post}}
-				</br>
-				<br>
-					Question 4: {{Question_4_pay_post}}
-				</br>
-			</div>
-		</div>
 		<div class = "payoffs">
 			<div class = "text-header">
 			<br>

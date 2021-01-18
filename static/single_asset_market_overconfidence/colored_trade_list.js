@@ -17,7 +17,7 @@ class ColoredTradeList extends TradeList{
                     box-sizing: border-box;
                 }
                 .my-trade {
-	                background-color: #AA0011;
+	                background-color: #00AA11;
 	            }
                 #container div {
                     border: 1px solid black;

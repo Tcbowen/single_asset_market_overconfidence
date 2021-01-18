@@ -84,9 +84,9 @@ class Results(Page):
 
     def vars_for_template(self): 
         if self.player.world_state==1:
-            state="good"
+            state="G"
         elif self.player.world_state==0:
-            state="bad"
+            state="B"
 
         return {
             'Question_1_pay_post': self.player.Question_1_payoff_post,

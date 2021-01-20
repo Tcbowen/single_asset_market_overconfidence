@@ -76,8 +76,11 @@ class Wait(WaitPage):
     after_all_players_arrive = 'set_payoffs'
     
 class Results(Page):
-
-    timeout_seconds = 30
+    def get_timeout_seconds(self):
+        if self.subsession.round_number==2:
+            return 1000
+        else:
+            return 30
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()

@@ -97,6 +97,8 @@ class Results(Page):
             'Question_2_pay_pre': self.player.Question_2_payoff_pre,
             'Question_3_pay_pre': self.player.Question_3_payoff_pre,
             'profit': self.player.profit,
+            'avg_pre':self.player.pre_survey_avg,
+            'avg_post': self.player.post_survey_avg,
             'payoff_from_trading': self.player.payoff_from_trading,
             'new_wealth': self.player.new_wealth,
             'old_wealth':self.player.old_wealth,

@@ -189,10 +189,11 @@ class Group(markets_models.Group):
                 return
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
+        
+    #    if player.settled_assets['A'] > 6:
+    #        self._send_error(enter_msg['pcode'], 'you cannot purchase more than 6 assets per round')
+    #        return
         player = self.get_player(enter_msg['pcode'])
-        if player.settled_assets['A'] > 10:
-            self._send_error(enter_msg['pcode'], 'you cannot purchase more than 8 assets per round')
-            return
         if player.check_available(enter_msg['is_bid'], enter_msg['price'], enter_msg['volume'], asset_name):
             self.try_cancel_active_order(enter_msg['pcode'], enter_msg['is_bid'], asset_name)
         super()._on_enter_event(event)
@@ -265,8 +266,7 @@ class Player(markets_models.Player):
     Question_2_payoff_post = models.IntegerField()
     Question_3_payoff_post = models.IntegerField()
     Question_4_payoff_post = models.IntegerField()
-    pre_survey_avg = models.IntegerField()
-    post_survey_avg = models.IntegerField()
+    survey_avg_pay = models.IntegerField()
     profit = models.IntegerField()
     new_wealth = models.IntegerField()
     old_wealth = models.IntegerField()
@@ -410,11 +410,9 @@ class Player(markets_models.Player):
         ##R is the reported belief
         R = self.Question_4_post
         self.Question_4_payoff_post= (int) (100 - (math.pow((C - R),2)))
-        ###set avg_payoff#####
-        self.pre_survey_avg = (int) ((self.Question_1_payoff_pre+ self.Question_2_payoff_pre+self.Question_3_payoff_pre)/3)
-        self.post_survey_avg = (int)((self.Question_1_payoff_post+ self.Question_2_payoff_post+self.Question_3_payoff_post+self.Question_4_payoff_post)/4)
         ## set total payoff ###############################
         self.payoff_from_trading = (500+self.profit)
-        self.total_payoff = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post + self.Question_2_payoff_post + self.Question_3_payoff_post + self.Question_4_post)/7) + self.payoff_from_trading
+        self.survey_avg_pay  = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post + self.Question_2_payoff_post + self.Question_3_payoff_post + self.Question_4_post)/7) 
+        self.total_payoff = self.survey_avg_pay + self.payoff_from_trading
         if (self.total_payoff*.0017)>self.payoff:
             self.payoff = (self.total_payoff * .0017)

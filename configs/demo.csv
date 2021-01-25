@@ -1,6 +1,6 @@
 period_length,asset_endowment,cash_endowment,allow_short,sig,env
-180,2,1000,FALSE,1,0
-180,2,1000,FALSE,1,0
+240,2,1000,FALSE,1,0
+240,2,1000,FALSE,1,0
 180,2,1000,FALSE,0,0
 180,2,1000,FALSE,0,0
 180,2,1000,FALSE,1,0

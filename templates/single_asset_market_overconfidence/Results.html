@@ -16,6 +16,9 @@ Your Results
 .survey {
 	flex: 60%;
 }
+th, td{
+	padding: 15px;
+}
 .avg{
 	flex: 40%;
 }
@@ -58,17 +61,14 @@ Your Results
 			<div class="survey">
 				<table>
 						<tr>
-							<div class = "text-header">
-								<td>
+								<td class = "text-header">
 									Pre-Survey Answers
 								</td>
-								<td>
+								<td class = "text-header">
 									Post-Survey Answers
 								</td>
-							</div>
 						</tr>
-					<div class = "text-results">
-						<tr>
+						<tr class = "text-results">
 							<td>
 								Question 1: {{Question_1_pay_pre}}
 							</td>
@@ -76,7 +76,7 @@ Your Results
 								Question 1: {{Question_1_pay_post}}
 							</td>
 						</tr>
-						<tr>
+						<tr class = "text-results">
 							<td>
 								Question 2: {{Question_2_pay_pre}}
 							</td>
@@ -84,7 +84,7 @@ Your Results
 								Question 2: {{Question_2_pay_post}}
 							</td>
 						</tr>
-						<tr>
+						<tr class = "text-results">
 							<td>
 								Question 3: {{Question_3_pay_pre}}
 							</td>
@@ -92,7 +92,7 @@ Your Results
 								Question 3: {{Question_3_pay_post}}
 							</td>
 						</tr>
-						<tr>
+						<tr class = "text-results">
 							<td>
 							</td>
 							<td>
@@ -103,7 +103,7 @@ Your Results
 				</table>
 			</div>
 			<div class="avg">
-				<br>
+				<br class = "text-results">
 					The average payoff from survey questions = 	(1/7)({{Question_1_pay_pre}} + {{Question_2_pay_pre}} + {{Question_3_pay_pre}} + {{Question_1_pay_post}} + {{Question_2_pay_post}} + {{Question_3_pay_post}} + {{Question_4_pay_post}}) = {{payoff_from_survey}}
 				</br>
 			</div>

@@ -27,20 +27,20 @@
     <div class="forms"> 
     	<div> 
         	<br>
-            	What is the probability (out of 100) that you believe the true state is 'G'?
+            	<b> Question 1: </b> What is the probability (out of 100) that you believe the true state is 'G'?
             </br>
             {% formfield player.Question_1_post %}
         </div>
     	<div> 
     		<br>
-    	        Of 100 times that the computer sends out the same signal as yours, guess how many times the true state is G? Please specify a lower bound L and an upper bound U that you expect the true number to lie within these two values with 90% probability.
+    	        <b> Question 2: </b> Of 100 times that the computer sends out the same signal as yours, guess how many times the true state is G? Please specify a lower bound L and an upper bound U that you expect the true number to lie within these two values with 90% probability.
         	</br>
            		Your answer:
             	{% formfield player.Question_2_low_post %}
             	{% formfield player.Question_2_hi_post%}
         <div>
             <br>
-                Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
+                <b> Question 3: </b> Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
             </br>
             <br>
                 {% formfield player.Question_3_post %}
@@ -48,7 +48,7 @@
         </div>
             <div> 
             <br>
-                Of the 8 traders (yourself included), what do you think your rank is in this period in terms of trading profit?
+                <b> Question 4: </b> Of the 8 traders (yourself included), what do you think your rank is in this period in terms of trading profit?
             </br>
             <br>
             {% formfield player.Question_4_post %}

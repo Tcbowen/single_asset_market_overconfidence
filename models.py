@@ -259,13 +259,12 @@ class Player(markets_models.Player):
     total_white = models.IntegerField()
     total_black_low = models.IntegerField()
     total_black_high = models.IntegerField()
-    Question_1_payoff_pre = models.IntegerField()
-    Question_2_payoff_pre = models.IntegerField()
-    Question_3_payoff_pre = models.IntegerField()
-    Question_1_payoff_post = models.IntegerField()
-    Question_2_payoff_post = models.IntegerField()
-    Question_3_payoff_post = models.IntegerField()
-    Question_4_payoff_post = models.IntegerField()
+    Question_1_payoff_pre = models.IntegerField(initial=0)
+    Question_2_payoff_pre = models.IntegerField(initial=0)
+    Question_3_payoff_pre = models.IntegerField(initial=0)
+    Question_1_payoff_post = models.IntegerField(initial=0)
+    Question_2_payoff_post = models.IntegerField(initial=0)
+    Question_3_payoff_post = models.IntegerField(initial=0)
     survey_avg_pay = models.IntegerField()
     profit = models.IntegerField()
     new_wealth = models.IntegerField()
@@ -278,39 +277,25 @@ class Player(markets_models.Player):
         label='''
         Your answer:'''
     )
-
-    Question_2_low_pre = models.IntegerField(min=0, max=100,
-        label='''
-        (Lower Bound)'''
-    )
-    Question_2_hi_pre = models.IntegerField(min=0, max=100,
-        label='''
-        (Upper Bound)'''
-    )
-    Question_3_pre = models.IntegerField(min=100, max=300,
-        label='''
-        Enter a number betweeen 100 and 300.'''
-    )
-## Questions Post 
     Question_1_post = models.IntegerField(min=0, max=100,
         label='''
         Your answer:'''
     )
-
-    Question_2_low_post= models.IntegerField(min=0, max=100,
+    Question_2_pre = models.IntegerField(min=100, max=300,
         label='''
-        (Lower Bound)
+        Enter a number between 100 and 300.'''
+    )
+    Question_2_post = models.IntegerField(min=100, max=300,
+        label='''
+        Enter a number between 100 and 300.'''
+    )
+    Question_3_pre = models.IntegerField(
+        choices=[1,2,3,4,5,6,7,8],
+        label='''
+         Please choose one of the following.
         '''
     )
-    Question_2_hi_post = models.IntegerField(min=0, max=100,
-        label='''
-        (Upper Bound)
-        ''')
-    Question_3_post = models.IntegerField(min=100, max=300,
-        label='''
-        Enter a number betweeen 100 and 300.'''
-    )
-    Question_4_post = models.IntegerField(
+    Question_3_post = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
          Please choose one of the following.
@@ -348,71 +333,57 @@ class Player(markets_models.Player):
         p_n_post = random.randint(0,99)
         n_asset_binomail_post = np.random.binomial(1, p_n_post/100)
         n_asset_value_post = n_asset_binomail_post*200 +100
+         ################question 1 post#########################################
         if self.Question_1_post>p_n_post:
             self.Question_1_payoff_post = self.world_state*200 +100
         else:
             self.Question_1_payoff_post = n_asset_value_post
+
         ################question 1 pre#########################################
         if self.Question_1_pre>p_n_pre:
             self.Question_1_payoff_pre = self.world_state*200 +100
         else:
             self.Question_1_payoff_pre = n_asset_value_pre
-        #########################Question 2 post#################################
-
-        L = self.Question_2_low_post
-        U = self.Question_2_low_post
-
-        if self.subsession.config.env==1:
-            BU = self.BU_env_b(self.total_black_low, self.total_black_high)
-        else:
-            if self.signal_nature==1:
-                BU = self.BU_hi(self.total_black, self.total_white)
-             ## bad state
-            else:
-                BU = self.BU_low(self.total_black, self.total_white)
-
-        if BU>(L/100) and BU<(U/100):
-            self.Question_2_payoff_post= (100-(U-L))
-        else:
-            self.Question_2_payoff_post= 0
-         #########################Question 2 pre#################################
-        L = self.Question_2_low_pre
-        U = self.Question_2_low_pre
-
-        if self.subsession.config.env==1:
-            BU = self.BU_env_b(self.total_black_low, self.total_black_high)
-        else:
-            if self.signal_nature==1:
-                BU = self.BU_hi(self.total_black, self.total_white)
-             ## bad state
-            else:
-                BU = self.BU_low(self.total_black, self.total_white)
-
-        if BU>(L/100) and BU<(U/100):
-            self.Question_2_payoff_pre= (100-(U-L))
-        else:
-            self.Question_2_payoff_pre= 0
-        ################### ### question 3 post###################################
+        ################### ### question 2 post###################################
         p_n = random.randint(100,300)
-        if self.Question_3_post>p_n:
-            self.Question_3_payoff_post = self.world_state*200 +100
+        if self.Question_2_post>p_n:
+            self.Question_2_payoff_post = self.world_state*200 +100
         else:
-            self.Question_3_payoff_post = p_n
+            self.Question_2_payoff_post = p_n
+        ################### ### question 2 pre###################################
+        p_n = random.randint(100,300)
+        if self.Question_2_pre>p_n:
+            self.Question_2_payoff_pre = self.world_state*200 +100
+        else:
+            self.Question_2_payoff_pre = p_n
         ################### ### question 3 pre###################################
-        p_n = random.randint(100,300)
-        if self.Question_3_pre>p_n:
-            self.Question_3_payoff_pre = self.world_state*200 +100
-        else:
-            self.Question_3_payoff_pre = p_n
-        ################### ### question 4 post###################################
         ##C correct ranking
         C = self.ranking
         ##R is the reported belief
-        R = self.Question_4_post
-        self.Question_4_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        R = self.Question_3_pre
+        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        ################### ### question 3 post###################################
+        ##C correct ranking
+        C = self.ranking
+        ##R is the reported belief
+        R = self.Question_3_post
+        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        ### set to zero if did not answer survye questions
+        if self.Question_1_pre==0:
+            self.Question_1_payoff_pre = 0
+        if self.Question_1_post==0:
+            self.Question_1_payoff_post = 0
+        if self.Question_2_pre==0:
+            self.Question_2_payoff_pre = 0
+        if self.Question_2_post==0:
+            self.Question_2_payoff_post = 0
+        if self.Question_3_pre==0:
+            self.Question_3_payoff_pre = 0
+        if self.Question_3_post==0:
+            self.Question_3_payoff_post = 0
         ## set total payoff ###############################
         self.payoff_from_trading = (500+self.profit)
-        self.survey_avg_pay  = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post + self.Question_2_payoff_post + self.Question_3_payoff_post + self.Question_4_post)/7) 
+        self.survey_avg_pay  = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post+self.Question_2_post+ self.Question_3_payoff_post)/6) 
         self.total_payoff = self.survey_avg_pay + self.payoff_from_trading
         if (self.total_payoff*.0017)>self.payoff:
             self.payoff = (self.total_payoff * .0017)

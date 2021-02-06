@@ -30,7 +30,7 @@ class Pre_Trading_Survey(Page):
             }
 
     form_model = 'player'
-    form_fields = ['Question_1_pre', 'Question_2_low_pre','Question_2_hi_pre', 'Question_3_pre']
+    form_fields = ['Question_1_pre', 'Question_2_pre', 'Question_3_pre']
 
 
 class Market(BaseMarketPage): 
@@ -85,7 +85,7 @@ class Post_Trading_Survey(Page):
             }
 
     form_model = 'player'
-    form_fields = ['Question_1_post', 'Question_2_low_post','Question_2_hi_post', 'Question_3_post','Question_4_post']
+    form_fields = ['Question_1_post', 'Question_2_post', 'Question_3_post']
 
 class Wait(WaitPage):
     wait_for_all_groups = True
@@ -112,7 +112,6 @@ class Results(Page):
             'Question_1_pay_post': self.player.Question_1_payoff_post,
             'Question_2_pay_post': self.player.Question_2_payoff_post,
             'Question_3_pay_post': self.player.Question_3_payoff_post,
-            'Question_4_pay_post': self.player.Question_4_payoff_post,
             'Question_1_pay_pre': self.player.Question_1_payoff_pre,
             'Question_2_pay_pre': self.player.Question_2_payoff_pre,
             'Question_3_pay_pre': self.player.Question_3_payoff_pre,

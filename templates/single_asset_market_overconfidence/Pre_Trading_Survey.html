@@ -34,18 +34,18 @@
     </div>
     <div> 
 		<br>
-	        <b> Question 2: </b> Of 100 times that the computer sends out the same signal as yours, guess how many times the true state is G? Please specify a lower bound L and an upper bound U that you expect the true number to lie within these two values with 90% probability.
-    	</br>
-       		Your answer:
-        	{% formfield player.Question_2_low_pre %}
-        	{% formfield player.Question_2_hi_pre %}
+                <b> Question 2: </b> Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
+            </br>
+            <br>
+                {% formfield player.Question_2_pre %}
     </div>
     <div>
             <br>
-                <b> Question 3: </b> Please decide on a price (between 100 and 300) at which you are willing to sell your asset.
+                <b> Question 3: </b> Of the 8 traders (yourself included), what do you think your rank is in this period in terms of trading profit?
             </br>
             <br>
                 {% formfield player.Question_3_pre %}
+            </br>
         </br>
     </div>
     {% next_button %}

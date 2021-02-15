@@ -58,7 +58,7 @@ class Market(BaseMarketPage):
             'img_url': img_url,
             'img_sig_url': img_sig_url,
         }
-class Post_Trading_Survey(Page):
+class Post_Trading_Survey(BaseMarketPage):
     def get_timeout_seconds(self):
         if self.subsession.round_number<=2:
             return 50

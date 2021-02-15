@@ -77,16 +77,5 @@ class ColoredTradeList extends TradeList{
                 return "other-trade";
             }
         }
-    //     if (trade.taking_order.pcode == this.pcode || trade.making_orders.some(order => order.pcode == this.pcode)){
-    //         if (trade.taking_order.is_bid || trade.making_orders.some(order => order.pcode=this.pcode && order.is_bid)){
-    //             return 'my-trade-buy';
-    //         }
-    //         else{
-    //             return 'my-trade-sell';
-    //         }
-    //     }
-    //     else
-    //         return 'other-trade';
-    // }
  }
  window.customElements.define('colored-trade-list', ColoredTradeList);

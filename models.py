@@ -25,16 +25,25 @@ class Constants(BaseConstants):
         'asset_endowment': int,
         'cash_endowment': int,
         'allow_short': bool,
-        'sig': int,
+        'sig_a': int,
+        'sig_b_c': int,
         'env': int, 
-        'player_1': int, 
-        'player_2': int, 
-        'player_3': int, 
-        'player_4': int, 
-        'player_5': int, 
-        'player_6': int, 
-        'player_7': int, 
-        'player_8': int, 
+        'player_1_a': int, 
+        'player_2_a': int, 
+        'player_3_a': int, 
+        'player_4_a': int, 
+        'player_5_a': int, 
+        'player_6_a': int, 
+        'player_7_a': int, 
+        'player_8_a': int, 
+        'player_1_b_c': int, 
+        'player_2_b_c': int, 
+        'player_3_b_c': int, 
+        'player_4_b_c': int, 
+        'player_5_b_c': int, 
+        'player_6_b_c': int, 
+        'player_7_b_c': int, 
+        'player_8_b_c': int
     }
 
 
@@ -50,24 +59,11 @@ class Subsession(markets_models.Subsession):
 
         world_state_binomial = np.random.binomial(1, 0.5) 
         self.set_signal(self.config.env)
+        self.set_balls_signal(self.config.env)
 
         for player in self.get_players():
             ## set the world state for each player equal to the global state
             player.world_state = world_state_binomial 
-            ##good state
-            if player.world_state == 1:
-                if player.signal_nature==1:
-                    signal1_blackballs = 4
-                else:  
-                    signal1_blackballs = 3               
-            ##bad state
-            if player.world_state == 0:
-                if player.signal_nature==1:
-                    signal1_blackballs = 1
-                else:  
-                    signal1_blackballs = 2  
-            player.signal1_black = np.random.binomial(2,signal1_blackballs/5) 
-            player.signal1_white = 2-player.signal1_black
 
         ### get totals 
         total_black = self.get_black_balls()
@@ -89,22 +85,32 @@ class Subsession(markets_models.Subsession):
     #######################################################################
     def set_signal(self, env):
         if env == 0:
-            sig = self.config.sig
+            sig = self.config.sig_a
             for p in self.get_players():
                 p.signal_nature = sig
         else:
-            player_private_signals = self.get_player_sig_array()
+            sig = self.config.sig_b_c
+            for p in self.get_players():
+                p.signal_nature = sig
+    def set_balls_signal(self,env):
+            player_bb = self.get_bb_array(env)
             i=0
             for p in self.get_players():
-                p.signal_nature = player_private_signals[i]
+                p.signal1_black = player_bb[i]
+                p.signal1_white = 2-p.signal1_black
                 i=i+1
     #######################################################################
     ### creates an array of player private signals  
     ### 
     #######################################################################
-    def get_player_sig_array(self):
-        return [self.config.player_1,self.config.player_2, self.config.player_3, self.config.player_4, 
-                    self.config.player_5, self.config.player_6,self.config.player_7, self.config.player_8]
+    def get_bb_array(self, env):
+        if env==0:
+            return [self.config.player_1_a,self.config.player_2_a, self.config.player_3_a, self.config.player_4_a, 
+                    self.config.player_5_a, self.config.player_6_a,self.config.player_7_a, self.config.player_8_a]
+        else:
+            return [self.config.player_1_b_c,self.config.player_2_b_c, self.config.player_3_b_c, self.config.player_4_b_c, 
+                    self.config.player_5_b_c, self.config.player_6_b_c,self.config.player_7_b_c, self.config.player_8_b_c]
+
     #######################################################################
     ### sets all profits players 
     ### player

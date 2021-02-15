@@ -16,9 +16,15 @@ class ColoredTradeList extends TradeList{
                     overflow-y: auto;
                     box-sizing: border-box;
                 }
-                .my-trade {
-	                background-color: #00AA11;
+                .my-trade-buy {
+	                background-color: #3EF849;
 	            }
+                .my-trade-sell {
+                    background-color: #00FDF5;
+                }
+                .other-trade{
+                     background-color: None;
+                }
                 #container div {
                     border: 1px solid black;
                     text-align: center;
@@ -47,10 +53,40 @@ class ColoredTradeList extends TradeList{
         this.pcode = this.$.constants.participantCode;
     }
    	_getTradeClass(trade) {
-        if (trade.taking_order.pcode == this.pcode || trade.making_orders.some(order => order.pcode == this.pcode))
-            return 'my-trade';
-        else
-            return 'other-trade';
-    }
+        // for traking order
+            if (trade.taking_order.pcode == this.pcode){
+                if(trade.taking_order.is_bid)
+                    return 'my-trade-buy';
+                else
+                    return 'my-trade-sell';
+            }
+        // for making order
+            else if  (trade.making_orders.some(order => order.pcode == this.pcode)){
+                var order;
+                for (var i = 0; i < trade.making_orders.length; i++) {
+                    if (trade.making_orders[i].pcode == this.pcode)
+                        order = trade.making_orders[i];
+                }
+                if(order.is_bid)
+                    return 'my-trade-buy';
+                else
+                    return 'my-trade-sell';
+            }
+        //for other orders
+            else {
+                return "other-trade";
+            }
+        }
+    //     if (trade.taking_order.pcode == this.pcode || trade.making_orders.some(order => order.pcode == this.pcode)){
+    //         if (trade.taking_order.is_bid || trade.making_orders.some(order => order.pcode=this.pcode && order.is_bid)){
+    //             return 'my-trade-buy';
+    //         }
+    //         else{
+    //             return 'my-trade-sell';
+    //         }
+    //     }
+    //     else
+    //         return 'other-trade';
+    // }
  }
  window.customElements.define('colored-trade-list', ColoredTradeList);

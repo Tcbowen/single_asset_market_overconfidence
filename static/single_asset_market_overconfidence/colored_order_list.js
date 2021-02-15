@@ -13,9 +13,12 @@ class ColoredOrderList extends OrderList{
                     overflow-y: auto;
                     box-sizing: border-box;
                 }
-                .my-order {
-	                background-color: #00AA11;
+                .my-bid-order {
+	                background-color: #3EF849;
 	            }
+                .my-ask-order {
+                    background-color: #00FDF5;
+                }
                 #container > div {
                     position: relative;
                     border: 1px solid black;
@@ -53,6 +56,16 @@ class ColoredOrderList extends OrderList{
             </div>
 	            `;
 	    }
+
+        _getOrderClass(order) {
+        if (order.pcode == this.pcode)
+            if (order.is_bid)
+                return 'my-bid-order';
+            else
+                return 'my-ask-order'
+        else
+            return 'other-order';
+    }
 }
 
 window.customElements.define('colored-order-list', ColoredOrderList);

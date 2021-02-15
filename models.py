@@ -208,7 +208,7 @@ class Group(markets_models.Group):
 
         if player.check_available(not accepted_order_dict['is_bid'], accepted_order_dict['price'], accepted_order_dict['volume'], accepted_order_dict['asset_name']):
             self.try_cancel_active_order(sender_pcode, not accepted_order_dict['is_bid'], asset_name)
-        
+
         super()._on_accept_event(event)
    
     def try_cancel_active_order(self, pcode, is_bid, asset_name):
@@ -223,21 +223,38 @@ class Group(markets_models.Group):
 
 class Player(markets_models.Player):
 
+
     def check_available(self, is_bid, price, volume, asset_name):
         '''instead of checking available assets, just check settled assets since there can
         only ever be one bid/ask on the market from each player
         '''
-        if is_bid and self.settled_cash < price * volume:
-            return False
-        elif not is_bid and self.settled_assets[asset_name] < volume:
+        if not is_bid and self.settled_assets[asset_name] < volume:
             return False
         return True
+       
+    def update_holdings_trade(self, price, volume, is_bid, asset_name):
+        if is_bid:
+            self.settled_cash -= price * volume
+
+            self.available_assets[asset_name] += volume
+            self.settled_assets[asset_name] += volume
+        else:
+            self.settled_cash += price * volume
+
+            self.available_assets[asset_name] -= volume
+            self.settled_assets[asset_name] -= volume
 
     def asset_endowment(self):
         return self.subsession.config.asset_endowment
     
     def cash_endowment(self):
         return self.subsession.config.cash_endowment
+
+    def update_holdings_available(self, order, removed):
+        sign = 1 if removed else -1
+        if not order.is_bid:
+            self.available_assets[order.exchange.asset_name] += order.volume * sign
+            
 
 ## Bayes methods
     def BU_low(self, k, m ):
@@ -267,8 +284,7 @@ class Player(markets_models.Player):
     Question_3_payoff_post = models.IntegerField(initial=0)
     survey_avg_pay = models.IntegerField()
     profit = models.IntegerField()
-    new_wealth = models.IntegerField()
-    old_wealth = models.IntegerField()
+    asset_value = models.IntegerField()
     payoff_from_trading = models.IntegerField()
     shares = models.IntegerField()
     average_payoff = models.IntegerField()
@@ -308,14 +324,12 @@ class Player(markets_models.Player):
         self.shares = self.settled_assets['A']
         old_asset_value = 0
         if self.world_state==1:
-            self.new_wealth =  self.shares*300 + self.settled_cash
-            old_asset_value = 300*self.subsession.config.asset_endowment
+            self.asset_value = self.shares*300
+            self.profit = self.asset_value + self.settled_cash
              ## bad state
         else:
-           self.new_wealth =  self.shares*100 + self.settled_cash
-           old_asset_value = 100*self.subsession.config.asset_endowment
-        self.old_wealth = self.subsession.config.cash_endowment + old_asset_value
-        self.profit = self.new_wealth - self.old_wealth
+            self.asset_value = self.shares*100
+            self.profit =  self.asset_value + self.settled_cash
     #######################################################################
     ### sets the proft for an indivdual player 
     #######################################################################
@@ -382,8 +396,11 @@ class Player(markets_models.Player):
         if self.Question_3_post==0:
             self.Question_3_payoff_post = 0
         ## set total payoff ###############################
-        self.payoff_from_trading = (500+self.profit)
+        self.payoff_from_trading = self.profit
+
         self.survey_avg_pay  = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post+self.Question_2_post+ self.Question_3_payoff_post)/6) 
+        
         self.total_payoff = self.survey_avg_pay + self.payoff_from_trading
+
         if (self.total_payoff*.0017)>self.payoff:
             self.payoff = (self.total_payoff * .0017)

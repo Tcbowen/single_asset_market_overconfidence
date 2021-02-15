@@ -2,7 +2,7 @@ import { html, PolymerElement } from '/static/otree-redwood/node_modules/@polyme
 import '/static/otree-redwood/src/redwood-channel/redwood-channel.js';
 import '/static/otree-redwood/src/otree-constants/otree-constants.js';
 
-import '/static/otree_markets/trader_state.js'
+import '/static/otree_markets/trader_state.js';
 import './colored_order_list.js';
 import './colored_trade_list.js';
 import '/static/otree_markets/simple_modal.js';
@@ -88,7 +88,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 trades="{{trades}}"
                 settled-assets="{{settledAssets}}"
                 available-assets="{{availableAssets}}"
-                settled-cash="{{settledCash}}"
+                settled-cash = "{{settledCash}}"
                 available-cash="{{availableCash}}"
                 on-confirm-trade="_confirm_trade"
                 on-confirm-cancel="_confirm_cancel"
@@ -98,8 +98,8 @@ class SingleAssetTextInterface extends PolymerElement {
                     <div>
                         <h4>Your Allocation</h4>
                     </div>
-                    <div>Your Experimental Points: {{settledCash}}</div>
-                    <div>Your Assets: {{settledAssets}}</div>
+                    <div>Your Cash flow: {{settledCash}} </div>
+                    <div>Your Assets: {{settledAssets}} </div>
             </div>
             <div class="container" id="main-container">
                 <div>
@@ -189,8 +189,7 @@ class SingleAssetTextInterface extends PolymerElement {
         if (price<100 || price>300){
             this.$.log.error('Invalid price entered');
             return;
-        }
-        
+        }       
         this.$.trader_state.enter_order(price, volume, is_bid);
     }
 

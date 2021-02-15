@@ -26,7 +26,15 @@ class Constants(BaseConstants):
         'cash_endowment': int,
         'allow_short': bool,
         'sig': int,
-        'env': int
+        'env': int, 
+        'player_1': int, 
+        'player_2': int, 
+        'player_3': int, 
+        'player_4': int, 
+        'player_5': int, 
+        'player_6': int, 
+        'player_7': int, 
+        'player_8': int, 
     }
 
 
@@ -85,14 +93,18 @@ class Subsession(markets_models.Subsession):
             for p in self.get_players():
                 p.signal_nature = sig
         else:
-            sig = self.config.sig
+            player_private_signals = self.get_player_sig_array()
             i=0
             for p in self.get_players():
-                if i%2==0:
-                    p.signal_nature = sig
-                else: 
-                    p.signal_nature = (1-sig)
-                i= i+1
+                p.signal_nature = player_private_signals[i]
+                i=i+1
+    #######################################################################
+    ### creates an array of player private signals  
+    ### 
+    #######################################################################
+    def get_player_sig_array(self):
+        return [self.config.player_1,self.config.player_2, self.config.player_3, self.config.player_4, 
+                    self.config.player_5, self.config.player_6,self.config.player_7, self.config.player_8]
     #######################################################################
     ### sets all profits players 
     ### player
@@ -131,13 +143,12 @@ class Subsession(markets_models.Subsession):
         total_black =0
         for p in self.get_players():
             total_black = total_black+p.signal1_black
-
         return total_black
+
     def get_white_balls(self):
         total_white =0
         for p in self.get_players():
             total_white = total_white+p.signal1_white
-
         return total_white
     #######################################################################
     ### retuns the total black balls when signal low
@@ -148,7 +159,6 @@ class Subsession(markets_models.Subsession):
         for p in self.get_players():
             if p.signal_nature==0:
                     total_black = total_black + p.signal1_black
-
         return total_black
     #######################################################################
     ### retuns the total black balls when signal high
@@ -159,7 +169,6 @@ class Subsession(markets_models.Subsession):
         for p in self.get_players():
             if p.signal_nature==1:
                     total_black = total_black + p.signal1_black
-
         return total_black
 
 class Group(markets_models.Group):

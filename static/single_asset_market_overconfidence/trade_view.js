@@ -78,6 +78,13 @@ class TradeView extends PolymerElement {
             </div>
         `;
     }
+    ready() {
+        super.ready();
+        this.pcode = this.$.constants.participantCode;
+        this.tradeFormatter = (making_order, taking_order)=> {
+            return `${making_order.price}`;
+        };
+    }
 
 } 
 

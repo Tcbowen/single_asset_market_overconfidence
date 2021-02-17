@@ -17,7 +17,6 @@ class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
     players_per_group = None
     num_rounds = 30 
- 
     # the columns of the config CSV and their types
     # this dict is used by ConfigManager
     config_fields = {
@@ -25,6 +24,7 @@ class Constants(BaseConstants):
         'asset_endowment': int,
         'cash_endowment': int,
         'allow_short': bool,
+        'state': int,
         'sig_a': int,
         'sig_b_c': int,
         'env': int, 
@@ -57,13 +57,12 @@ class Subsession(markets_models.Subsession):
         return self.config.allow_short
     def creating_session(self):
 
-        world_state_binomial = np.random.binomial(1, 0.5) 
         self.set_signal(self.config.env)
         self.set_balls_signal(self.config.env)
 
         for player in self.get_players():
             ## set the world state for each player equal to the global state
-            player.world_state = world_state_binomial 
+            player.world_state = self.config.state
 
         ### get totals 
         total_black = self.get_black_balls()
@@ -417,5 +416,7 @@ class Player(markets_models.Player):
         
         self.total_payoff = self.survey_avg_pay + self.payoff_from_trading
 
-        if (self.total_payoff*.0017)>self.payoff:
-            self.payoff = (self.total_payoff * .0017)
+        ## sets payoff to best payoff per round 
+        conversion_rate = .0017
+        if self.subsession.round_number > 2:
+                self.payoff = (self.payoff + (self.total_payoff * conversion_rate))/(self.round_number-2)

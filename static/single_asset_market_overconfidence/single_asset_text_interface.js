@@ -103,7 +103,7 @@ class SingleAssetTextInterface extends PolymerElement {
             </div>
             <div class="container" id="main-container">
                 <div>
-                    <h3>Bids</h3>
+                    <h3>Bids (Buy)</h3>
                     <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
@@ -121,7 +121,7 @@ class SingleAssetTextInterface extends PolymerElement {
                     ></colored-trade-list>
                 </div>
                 <div>
-                    <h3>Asks</h3>
+                    <h3>Asks (Sell)</h3>
                     <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"

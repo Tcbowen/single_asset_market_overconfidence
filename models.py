@@ -389,7 +389,7 @@ class Player(markets_models.Player):
         C = self.ranking
         ##R is the reported belief
         R = self.Question_3_pre
-        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        self.Question_3_payoff_pre= (int) (100 - (math.pow((C - R),2)))
         ################### ### question 3 post###################################
         ##C correct ranking
         C = self.ranking

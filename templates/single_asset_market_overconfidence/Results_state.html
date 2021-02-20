@@ -8,27 +8,8 @@ Your Results
 .results-container{
     display: flex;
 }
-.questions {
-	display: flex;
-	flex: 50%;
-	flex-direction: column;
-	padding: 15px;
-}
-.survey {
-	flex: 60%;
-}
-th, td{
-	padding: 15px;
-}
-.avg{
-	flex: 40%;
-}
-.payoffs{
- 	flex: 50%;
-}
 .state{
 	flex: 80%;
-}
 }
 .text-results {
 	text-align: center;
@@ -44,15 +25,17 @@ th, td{
 
 {% endblock %}
 {% block content %}
-<div class = "state">
-			<div class = "text-header">
-				<br>
-					The true world state for this period is <b>{{state}}</b>
-				</br>
-				<br>
-					you own <b>{{shares}}</b> shares at the end of the period. 
-				</br>
-			</div>
+<div class = "results-container">
+	<div class = "state">
+		<div class = "text-header">
+			<br>
+				The true world state for this period is <b>{{state}}</b>
+			</br>
+			<br>
+				you own <b>{{shares}}</b> shares at the end of the period. 
+			</br>
 		</div>
+	</div>
+</div>
 {% next_button %}
 {% endblock %}

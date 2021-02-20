@@ -1,0 +1,86 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Your Results 
+{% endblock %}
+
+{% block styles %}
+<style>
+.results-container{
+    display: flex;
+}
+.questions {
+	display: flex;
+	flex: 50%;
+	flex-direction: column;
+	padding: 15px;
+}
+.survey {
+	flex: 60%;
+}
+th, td{
+	padding: 15px;
+}
+.avg{
+	flex: 40%;
+}
+.payoffs{
+ 	flex: 50%;
+}
+.state{
+	flex: 80%;
+}
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<div class="survey">
+				<table>
+						<tr>
+								<td class = "text-header">
+									Pre-Survey Payoffs
+								</td>
+								<td class = "text-header">
+									Post-Survey Payoffs
+								</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 1: {{Question_1_pay_pre}}
+							</td>
+							<td>
+								Question 1: {{Question_1_pay_post}}
+							</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 2: {{Question_2_pay_pre}}
+							</td>
+							<td>
+								Question 2: {{Question_2_pay_post}}
+							</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 3: {{Question_3_pay_pre}}
+							</td>
+							<td>
+								Question 3: {{Question_3_pay_post}}
+							</td>
+						</tr>
+						</div>
+				</table>
+			</div>
+{% next_button %}
+{% endblock %}

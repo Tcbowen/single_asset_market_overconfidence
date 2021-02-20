@@ -419,4 +419,4 @@ class Player(markets_models.Player):
         ## sets payoff to best payoff per round 
         conversion_rate = .0017
         if self.subsession.round_number > 2:
-                self.payoff = (self.payoff + (self.total_payoff * conversion_rate))/(self.round_number-2)
+                self.payoff = (self.payoff + (self.total_payoff * conversion_rate))

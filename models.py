@@ -2,16 +2,13 @@ from otree.api import (
     models, BaseConstants
 )
 from otree_markets import models as markets_models
-from otree_markets.exchange.base import Order, OrderStatusEnum
+from otree_markets.exchange.base import Order
 from .configmanager import ConfigManager
-from itertools import chain
 
 import random
-import numpy
 import itertools
 import numpy as np
 import math
-import os
 
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
@@ -179,6 +176,7 @@ class Subsession(markets_models.Subsession):
 class Group(markets_models.Group):
     def period_length(self):
         return self.subsession.config.period_length
+
     def _on_enter_event(self, event):
         '''handle an enter message sent from the frontend
         
@@ -204,39 +202,68 @@ class Group(markets_models.Group):
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
         
-    #    if player.settled_assets['A'] > 6:
-    #        self._send_error(enter_msg['pcode'], 'you cannot purchase more than 6 assets per round')
-    #        return
-        player = self.get_player(enter_msg['pcode'])
-        if player.check_available(enter_msg['is_bid'], enter_msg['price'], enter_msg['volume'], asset_name):
-            self.try_cancel_active_order(enter_msg['pcode'], enter_msg['is_bid'], asset_name)
         super()._on_enter_event(event)
         
-    
-    def _on_accept_event(self, event):
-        accepted_order_dict = event.value
-        asset_name = accepted_order_dict['asset_name'] if accepted_order_dict['asset_name'] else markets_models.SINGLE_ASSET_NAME
+    def confirm_enter(self, order):
+        player = self.get_player(order.pcode)
+        player.refresh_from_db()
+        exchange = self.exchanges.get()
 
-        sender_pcode = event.participant.code
-        player = self.get_player(sender_pcode)
-
-        if player.check_available(not accepted_order_dict['is_bid'], accepted_order_dict['price'], accepted_order_dict['volume'], accepted_order_dict['asset_name']):
-            self.try_cancel_active_order(sender_pcode, not accepted_order_dict['is_bid'], asset_name)
-
-        super()._on_accept_event(event)
-   
-    def try_cancel_active_order(self, pcode, is_bid, asset_name):
-        exchange = self.exchanges.get(asset_name=asset_name)
-        try:
-            old_order = exchange.orders.get(pcode=pcode, is_bid=is_bid, status=OrderStatusEnum.ACTIVE)
-        except Order.DoesNotExist: 
-            pass
+        if order.is_bid:
+            if player.current_bid:
+                exchange.cancel_order(player.current_bid.id)
+            player.current_bid = order
+            player.save()
         else:
-            exchange.cancel_order(old_order.id)
+            if player.current_ask:
+                exchange.cancel_order(player.current_ask.id)
+            player.current_ask = order
+            player.save()
+
+        super().confirm_enter(order)
+
+    def confirm_trade(self, trade):
+        exchange = self.exchanges.get()
+        for order in itertools.chain(trade.making_orders.all(), [trade.taking_order]):
+            player = self.get_player(order.pcode)
+            player.refresh_from_db()
+
+            # if the order from this trade is the current order for that player, update their current order to None.
+            # if the order from this trade is NOT the current order for that player, cancel it.
+            # the exception to this is if the price on the trade order and current order are the same, we assume the current
+            # order is a partially completed order from this trade and don't cancel it
+            if order.is_bid and player.current_bid:
+                if order.id == player.current_bid.id:
+                    player.current_bid = None
+                    player.save()
+                elif order.price != player.current_bid.price:
+                    exchange.cancel_order(player.current_bid.id)
+
+            if not order.is_bid and player.current_ask:
+                if order.id == player.current_ask.id:
+                    player.current_ask = None
+                    player.save()
+                elif order.price != player.current_ask.price:
+                    exchange.cancel_order(player.current_ask.id)
+
+        super().confirm_trade(trade)
+    
+    def confirm_cancel(self, order):
+        player = self.get_player(order.pcode)
+        player.refresh_from_db()
+        if order.is_bid:
+            player.current_bid = None
+        else:
+            player.current_ask = None
+        player.save()
+
+        super().confirm_cancel(order)
     
 
 class Player(markets_models.Player):
 
+    current_bid = models.ForeignKey(Order, null=True, on_delete=models.CASCADE, related_name="+")
+    current_ask = models.ForeignKey(Order, null=True, on_delete=models.CASCADE, related_name="+")
 
     def check_available(self, is_bid, price, volume, asset_name):
         '''instead of checking available assets, just check settled assets since there can

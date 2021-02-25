@@ -1,7 +1,7 @@
 {% extends "global/Page.html" %}
 {% load otree %}
 {% block title %}
-Your Results 
+Sruvey Results 
 {% endblock %}
 
 {% block styles %}
@@ -11,6 +11,10 @@ Your Results
 }
 .survey {
 	flex: 80%;
+}
+table{
+	margin-left: auto;
+  	margin-right: auto;
 }
 th, td{
 	padding: 15px;
@@ -64,8 +68,17 @@ th, td{
 								Question 3: {{Question_3_pay_post}}
 							</td>
 						</tr>
-						</div>
 				</table>
+				<div class = "text-header">
+					<br>
+					The average payoff from survey questions:
+					</br>
+				</div>
+				<div class = "text-results">
+					<br>
+					(1/6)({{Question_1_pay_pre}} + {{Question_2_pay_pre}} + {{Question_3_pay_pre}} + {{Question_1_pay_post}} + {{Question_2_pay_post}} + {{Question_3_pay_post}}) = {{payoff_from_survey}}
+					</br>
+				</div>
 			</div>
 		</div>
 {% next_button %}

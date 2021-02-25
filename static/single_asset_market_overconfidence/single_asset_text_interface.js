@@ -42,6 +42,12 @@ class SingleAssetTextInterface extends PolymerElement {
                     flex: 1 0 0;
                     min-height: 0;
                 }
+                .bid {
+                    background-color: #3EF849;
+                }
+                .ask {
+                    background-color: #00FDF5;
+                }
                 #main-container {
                     height: 40vh;
                     margin-bottom: 10px;
@@ -132,14 +138,14 @@ class SingleAssetTextInterface extends PolymerElement {
                 </div>
             </div>
             <div class="container" id="order-input">
-                <div>
+                <div class = "bid">
                     <label for="bid_price_input">Bid Price</label>
                     <input id="bid_price_input" type="number" min="0">
                     <div>
                         <button type="button" on-click="_order_entered" value="bid">Enter Bid</button>
                     </div>
                 </div>
-                <div>
+                <div class = "ask">
                     <label for="ask_price_input">Ask Price</label>
                     <input id="ask_price_input" type="number" min="0">
                     <div>

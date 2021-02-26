@@ -13,7 +13,7 @@ import math
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
     players_per_group = None
-    num_rounds = 20 
+    num_rounds = 22
     # the columns of the config CSV and their types
     # this dict is used by ConfigManager
     config_fields = {

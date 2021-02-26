@@ -1,0 +1,83 @@
+{% extends "otree_markets/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Post Trading Survey
+{% endblock %}
+
+{% block scripts %}
+        <script type="module" src="/static/single_asset_market_overconfidence/trade_view.js"></script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.survey-container{
+    display: flex;
+}
+.signal {
+	flex: 35%;
+}
+.signal img {
+    max-width: 100%;
+    height: auto;
+}
+.forms {
+ 	flex: 65%;
+}
+.trade-container {
+    text-align: center;
+    justify-content: center;
+}
+</style>
+{% endblock %} 
+{% block content %}
+<body>
+<div class = "survey-container">
+    <div class="forms"> 
+    	<div> 
+        <br>
+            <b> Question 1: </b> What is the probability (out of 100) that you believe the true state is 'G'?
+        </br>
+        {% formfield player.Question_1_post %}
+    </div>
+    <div> 
+        <br>
+                <b> Question 2: </b> Please decide on the lowest price (between 100 and 300) at which you are willing to sell your asset.
+            </br>
+            <br>
+                {% formfield player.Question_2_post %}
+    </div>
+    <div>
+            <br>
+                <b> Question 3: </b> Of the 8 traders (yourself included), what do you think your rank is in this period in terms of trading profit? (1 means top, 8 means bottom)
+            </br>
+            <br>
+                {% formfield player.Question_3_post %}
+            </br>
+        </br>
+    </div>
+        {% next_button %}
+    </div>
+     <div class = "signal">
+        <img src="{{img_sig_url}}"/>
+            <b>
+                    <br>Your private signal</br>
+                    <br style="font-size:300%"> {{ signal1black }} Black Balls and {{ signal1white }} White Balls.</br>
+                <br>
+            <img src="{{img_url}}"/>
+            </br>
+        </b>
+        <div class="trade-container">
+            <h6>Trading History </h6>
+                    <b style="color:#3EF849">Green </b>means Buy
+                <br><b style="color:#00FDF5">Blue </b>means Sell</br>
+            <h3>Trades</h3>
+            <trade-view>
+            </trade-view>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}
+
+

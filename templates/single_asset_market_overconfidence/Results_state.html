@@ -1,0 +1,41 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Your Results
+{% endblock %}
+{% block styles %}
+<style>
+.results-container{
+    display: flex;
+}
+.state{
+	flex: 80%;
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<div class = "results-container">
+	<div class = "state">
+		<div class = "text-header">
+			<br>
+				The true world state for this period is <b>{{state}}</b>
+			</br>
+			<br>
+				you own <b>{{shares}}</b> shares at the end of the period. 
+			</br>
+		</div>
+	</div>
+</div>
+{% next_button %}
+{% endblock %}

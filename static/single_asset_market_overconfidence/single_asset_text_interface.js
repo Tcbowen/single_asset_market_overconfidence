@@ -2,9 +2,9 @@ import { html, PolymerElement } from '/static/otree-redwood/node_modules/@polyme
 import '/static/otree-redwood/src/redwood-channel/redwood-channel.js';
 import '/static/otree-redwood/src/otree-constants/otree-constants.js';
 
-import '/static/otree_markets/trader_state.js'
-import '/static/otree_markets/order_list.js';
-import '/static/otree_markets/trade_list.js';
+import '/static/otree_markets/trader_state.js';
+import './colored_order_list.js';
+import './colored_trade_list.js';
 import '/static/otree_markets/simple_modal.js';
 import '/static/otree_markets/event_log.js';
 
@@ -42,6 +42,12 @@ class SingleAssetTextInterface extends PolymerElement {
                     flex: 1 0 0;
                     min-height: 0;
                 }
+                .bid {
+                    background-color: #3EF849;
+                }
+                .ask {
+                    background-color: #00FDF5;
+                }
                 #main-container {
                     height: 40vh;
                     margin-bottom: 10px;
@@ -49,7 +55,6 @@ class SingleAssetTextInterface extends PolymerElement {
                 #main-container > div {
                     flex: 0 1 20%;
                 }
-
                 #log-container {
                     height: 20vh;
                 }
@@ -59,8 +64,9 @@ class SingleAssetTextInterface extends PolymerElement {
                 #container_orders > div {
                     height: 15vh;
                 }
-                order-list, trade-list, event-log {
+                colored-order-list, colored-trade-list, event-log {
                     border: 1px solid black;
+                    background-color: #f0f6ff
                 }
                 .order-info-header {
                     text-align: center;
@@ -89,7 +95,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 trades="{{trades}}"
                 settled-assets="{{settledAssets}}"
                 available-assets="{{availableAssets}}"
-                settled-cash="{{settledCash}}"
+                settled-cash = "{{settledCash}}"
                 available-cash="{{availableCash}}"
                 on-confirm-trade="_confirm_trade"
                 on-confirm-cancel="_confirm_cancel"
@@ -99,63 +105,50 @@ class SingleAssetTextInterface extends PolymerElement {
                     <div>
                         <h4>Your Allocation</h4>
                     </div>
-                    <div>Your Experimental Points: {{settledCash}}</div>
-                    <div>Your Assets: {{settledAssets}}</div>
+                    <div>Your Cash flow: {{settledCash}} </div>
+                    <div>Your Assets: {{settledAssets}} </div>
             </div>
             <div class="container" id="main-container">
                 <div>
-                    <h3>Bids</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
-                    <order-list
+                    <h3>Bids (Buy)</h3>
+                    <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
                         orders="[[bids]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
-                    ></order-list>
+                    ></colored-order-list>
                 </div>
                 <div>
                     <h3>Trades</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
-                    <trade-list
+                    <colored-trade-list
                         class="flex-fill"
                         display-format="[[ tradeFormatter ]]"
                         trades="[[trades]]"
-                    ></trade-list>
+                    ></colored-trade-list>
                 </div>
                 <div>
-                    <h3>Asks</h3>
-                    <div class="order-info-header">
-                        Price / Volume
-                    </div>
-                    <order-list
+                    <h3>Asks (Sell)</h3>
+                    <colored-order-list
                         class="flex-fill"
                         display-format="[[ orderFormatter ]]"
                         orders="[[asks]]"
                         on-order-canceled="_order_canceled"
                         on-order-accepted="_order_accepted"
-                    ></order-list>
+                    ></colored-order-list>
                 </div>
             </div>
             <div class="container" id="order-input">
-                <div>
-                    <label for="bid_price_input">Price</label>
+                <div class = "bid">
+                    <label for="bid_price_input">Bid Price</label>
                     <input id="bid_price_input" type="number" min="0">
-                    <label for="bid_volume_input">Volume</label>
-                    <input id="bid_volume_input" type="number" min="1">
                     <div>
                         <button type="button" on-click="_order_entered" value="bid">Enter Bid</button>
                     </div>
                 </div>
-                <div>
-                    <label for="ask_price_input">Price</label>
+                <div class = "ask">
+                    <label for="ask_price_input">Ask Price</label>
                     <input id="ask_price_input" type="number" min="0">
-                    <label for="ask_volume_input">Volume</label>
-                    <input id="ask_volume_input" type="number" min="1">
                     <div>
                         <button type="button" on-click="_order_entered" value="ask">Enter Ask</button>
                     </div>
@@ -177,10 +170,10 @@ class SingleAssetTextInterface extends PolymerElement {
         super.ready();
         this.pcode = this.$.constants.participantCode;
         this.orderFormatter = order => {
-            return `${order.price} / ${order.volume}`
+            return `${order.price}`
         }
-        this.tradeFormatter = trade => {
-            return `${trade.taking_order.price} / ${trade.taking_order.traded_volume}`;
+        this.tradeFormatter = (making_order, taking_order)=> {
+            return `${making_order.price}`;
         };
     }
 
@@ -190,11 +183,11 @@ class SingleAssetTextInterface extends PolymerElement {
         let price, volume;
         if (is_bid) {
             price = parseInt(this.$.bid_price_input.value);
-            volume = parseInt(this.$.bid_volume_input.value);
+            volume = 1;
         }
         else {
             price = parseInt(this.$.ask_price_input.value);
-            volume = parseInt(this.$.ask_volume_input.value);
+            volume = 1;
         }
         if (isNaN(price) || isNaN(volume)) {
             this.$.log.error('Invalid order entered');
@@ -203,8 +196,7 @@ class SingleAssetTextInterface extends PolymerElement {
         if (price<100 || price>300){
             this.$.log.error('Invalid price entered');
             return;
-        }
-        
+        }       
         this.$.trader_state.enter_order(price, volume, is_bid);
     }
 
@@ -228,7 +220,7 @@ class SingleAssetTextInterface extends PolymerElement {
         if (order.pcode == this.pcode)
             return;
 
-        this.$.modal.modal_text = `Do you want to ${order.is_bid ? 'buy' : 'sell'} for $${order.price}?`
+        this.$.modal.modal_text = `Do you want to ${order.is_bid ? 'sell' : 'buy'} for $${order.price}?`
         this.$.modal.on_close_callback = (accepted) => {
             if (!accepted)
                 return;
@@ -236,16 +228,6 @@ class SingleAssetTextInterface extends PolymerElement {
             this.$.trader_state.accept_order(order);
         };
         this.$.modal.show();
-    }
-
-    // react to the backend confirming that a trade occurred
-    _confirm_trade(event) {
-        const trade = event.detail;
-        const all_orders = trade.making_orders.concat([trade.taking_order]);
-        for (let order of all_orders) {
-            if (order.pcode == this.pcode)
-                this.$.log.info(`You ${order.is_bid ? 'bought' : 'sold'} ${order.traded_volume} ${order.traded_volume == 1 ? 'unit' : 'units'}`);
-        }
     }
 
     // react to the backend confirming that an order was canceled

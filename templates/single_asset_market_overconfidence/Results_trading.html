@@ -1,0 +1,47 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Trading Results 
+{% endblock %}
+
+{% block styles %}
+<style>
+.results-container{
+    display: flex;
+}
+.trading{
+	flex: 80%;
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<div class = "results-container">
+	<div class = "trading">
+		<div class = "text-header">
+			<br>
+			Your payoff from trading: {{payoff_from_trading}}
+			</br>
+		</div>
+		<div class = "text-results">
+			<br>
+				Payoff from trading = Net Cash + Asset Value * Number of Held assets 
+			</br>
+			<br>
+				{{profit}} = {{cash_flow}} + {{asset_value}}
+			</br>
+		</div>
+	</div>
+</div>
+{% next_button %}
+{% endblock %}

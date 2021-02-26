@@ -2,11 +2,10 @@ from otree.api import (
     models, BaseConstants
 )
 from otree_markets import models as markets_models
-from otree_markets.exchange.base import Order, OrderStatusEnum
+from otree_markets.exchange.base import Order
 from .configmanager import ConfigManager
 
 import random
-import numpy
 import itertools
 import numpy as np
 import math
@@ -14,8 +13,7 @@ import math
 class Constants(BaseConstants):
     name_in_url = 'single_asset_market_overconfidence'
     players_per_group = None
-    num_rounds = 30 
- 
+    num_rounds = 19
     # the columns of the config CSV and their types
     # this dict is used by ConfigManager
     config_fields = {
@@ -23,8 +21,26 @@ class Constants(BaseConstants):
         'asset_endowment': int,
         'cash_endowment': int,
         'allow_short': bool,
+        'state': int,
         'sig_a': int,
-        'env': int
+        'sig_b_c': int,
+        'env': int, 
+        'player_1_a': int, 
+        'player_2_a': int, 
+        'player_3_a': int, 
+        'player_4_a': int, 
+        'player_5_a': int, 
+        'player_6_a': int, 
+        'player_7_a': int, 
+        'player_8_a': int, 
+        'player_1_b_c': int, 
+        'player_2_b_c': int, 
+        'player_3_b_c': int, 
+        'player_4_b_c': int, 
+        'player_5_b_c': int, 
+        'player_6_b_c': int, 
+        'player_7_b_c': int, 
+        'player_8_b_c': int
     }
 
 
@@ -37,35 +53,13 @@ class Subsession(markets_models.Subsession):
     def allow_short(self):
         return self.config.allow_short
     def creating_session(self):
-        group_matrix = []
-        players = self.get_players()
-        ppg = 1
 
-        for i in range(0, len(players), ppg):
-            group_matrix.append(players[i:i+ppg])
-        self.set_group_matrix(group_matrix)
-        self.group_randomly()
-
-        world_state_binomial = np.random.binomial(1, 0.5) 
         self.set_signal(self.config.env)
+        self.set_balls_signal(self.config.env)
 
         for player in self.get_players():
             ## set the world state for each player equal to the global state
-            player.world_state = world_state_binomial 
-            ##good state
-            if player.world_state == 1:
-                if player.signal_nature==1:
-                    signal1_blackballs = 4
-                else:  
-                    signal1_blackballs = 3               
-            ##bad state
-            if player.world_state == 0:
-                if player.signal_nature==1:
-                    signal1_blackballs = 1
-                else:  
-                    signal1_blackballs = 2  
-            player.signal1_black = np.random.binomial(2,signal1_blackballs/5) 
-            player.signal1_white = 2-player.signal1_black
+            player.world_state = self.config.state
 
         ### get totals 
         total_black = self.get_black_balls()
@@ -91,12 +85,28 @@ class Subsession(markets_models.Subsession):
             for p in self.get_players():
                 p.signal_nature = sig
         else:
-            sig = itertools.cycle([0, 1])
+            sig = self.config.sig_b_c
+            for p in self.get_players():
+                p.signal_nature = sig
+    def set_balls_signal(self,env):
+            player_bb = self.get_bb_array(env)
+            i=0
+            for p in self.get_players():
+                p.signal1_black = player_bb[i]
+                p.signal1_white = 2-p.signal1_black
+                i=i+1
+    #######################################################################
+    ### creates an array of player private signals  
+    ### 
+    #######################################################################
+    def get_bb_array(self, env):
+        if env==0:
+            return [self.config.player_1_a,self.config.player_2_a, self.config.player_3_a, self.config.player_4_a, 
+                    self.config.player_5_a, self.config.player_6_a,self.config.player_7_a, self.config.player_8_a]
+        else:
+            return [self.config.player_1_b_c,self.config.player_2_b_c, self.config.player_3_b_c, self.config.player_4_b_c, 
+                    self.config.player_5_b_c, self.config.player_6_b_c,self.config.player_7_b_c, self.config.player_8_b_c]
 
-            for g in self.get_groups():
-                signal = next(sig)
-                for p in g.get_players():
-                    p.signal_nature = signal
     #######################################################################
     ### sets all profits players 
     ### player
@@ -135,13 +145,12 @@ class Subsession(markets_models.Subsession):
         total_black =0
         for p in self.get_players():
             total_black = total_black+p.signal1_black
-
         return total_black
+
     def get_white_balls(self):
         total_white =0
         for p in self.get_players():
             total_white = total_white+p.signal1_white
-
         return total_white
     #######################################################################
     ### retuns the total black balls when signal low
@@ -152,7 +161,6 @@ class Subsession(markets_models.Subsession):
         for p in self.get_players():
             if p.signal_nature==0:
                     total_black = total_black + p.signal1_black
-
         return total_black
     #######################################################################
     ### retuns the total black balls when signal high
@@ -163,7 +171,6 @@ class Subsession(markets_models.Subsession):
         for p in self.get_players():
             if p.signal_nature==1:
                     total_black = total_black + p.signal1_black
-
         return total_black
 
 class Group(markets_models.Group):
@@ -173,8 +180,11 @@ class Group(markets_models.Group):
     def _on_enter_event(self, event):
         '''handle an enter message sent from the frontend
         
-        first check to see if the new order would cross your own order, sending an error if it does
+        first check to see if the new order would cross your own order, sending an error if it does.
+        this isn't a proper check to see whether it would cross your own order, as it only checks the best
+        opposite-side order.
         '''
+
         enter_msg = event.value
         asset_name = enter_msg['asset_name'] if enter_msg['asset_name'] else markets_models.SINGLE_ASSET_NAME
 
@@ -191,43 +201,101 @@ class Group(markets_models.Group):
                 return
         if enter_msg['price'] >300 or enter_msg['price'] <100:
             return
+        
         super()._on_enter_event(event)
         
     def confirm_enter(self, order):
-        exchange = order.exchange
-        try:
-            # query for active orders in the same exchange as the new order, from the same player
-            old_order = (
-                exchange.orders
-                    .filter(pcode=order.pcode, is_bid=order.is_bid, status=OrderStatusEnum.ACTIVE)
-                    .exclude(id=order.id)
-                    .get()
-            )
-        except Order.DoesNotExist: 
-            pass
+        player = self.get_player(order.pcode)
+        player.refresh_from_db()
+        exchange = self.exchanges.get()
+
+        if order.is_bid:
+            if player.current_bid:
+                exchange.cancel_order(player.current_bid.id)
+            player.current_bid = order
+            player.save()
         else:
-            # if another order exists, cancel it
-            exchange.cancel_order(old_order.id)
+            if player.current_ask:
+                exchange.cancel_order(player.current_ask.id)
+            player.current_ask = order
+            player.save()
+
         super().confirm_enter(order)
+
+    def confirm_trade(self, trade):
+        exchange = self.exchanges.get()
+        for order in itertools.chain(trade.making_orders.all(), [trade.taking_order]):
+            player = self.get_player(order.pcode)
+            player.refresh_from_db()
+
+            # if the order from this trade is the current order for that player, update their current order to None.
+            # if the order from this trade is NOT the current order for that player, cancel it.
+            # the exception to this is if the price on the trade order and current order are the same, we assume the current
+            # order is a partially completed order from this trade and don't cancel it
+            if order.is_bid and player.current_bid:
+                if order.id == player.current_bid.id:
+                    player.current_bid = None
+                    player.save()
+                elif order.price != player.current_bid.price:
+                    exchange.cancel_order(player.current_bid.id)
+
+            if not order.is_bid and player.current_ask:
+                if order.id == player.current_ask.id:
+                    player.current_ask = None
+                    player.save()
+                elif order.price != player.current_ask.price:
+                    exchange.cancel_order(player.current_ask.id)
+
+        super().confirm_trade(trade)
+    
+    def confirm_cancel(self, order):
+        player = self.get_player(order.pcode)
+        player.refresh_from_db()
+        if order.is_bid:
+            player.current_bid = None
+        else:
+            player.current_ask = None
+        player.save()
+
+        super().confirm_cancel(order)
     
 
 class Player(markets_models.Player):
+
+    current_bid = models.ForeignKey(Order, null=True, on_delete=models.CASCADE, related_name="+")
+    current_ask = models.ForeignKey(Order, null=True, on_delete=models.CASCADE, related_name="+")
 
     def check_available(self, is_bid, price, volume, asset_name):
         '''instead of checking available assets, just check settled assets since there can
         only ever be one bid/ask on the market from each player
         '''
-        if is_bid and self.settled_cash < price * volume:
-            return False
-        elif not is_bid and self.settled_assets[asset_name] < volume:
+        if not is_bid and self.settled_assets[asset_name] < volume:
             return False
         return True
+       
+    def update_holdings_trade(self, price, volume, is_bid, asset_name):
+        if is_bid:
+            self.settled_cash -= price * volume
+
+            self.available_assets[asset_name] += volume
+            self.settled_assets[asset_name] += volume
+        else:
+            self.settled_cash += price * volume
+
+            self.available_assets[asset_name] -= volume
+            self.settled_assets[asset_name] -= volume
 
     def asset_endowment(self):
         return self.subsession.config.asset_endowment
     
     def cash_endowment(self):
         return self.subsession.config.cash_endowment
+
+    def update_holdings_available(self, order, removed):
+        sign = 1 if removed else -1
+        if not order.is_bid:
+            self.available_assets[order.exchange.asset_name] += order.volume * sign
+            
 
 ## Bayes methods
     def BU_low(self, k, m ):
@@ -249,26 +317,42 @@ class Player(markets_models.Player):
     total_white = models.IntegerField()
     total_black_low = models.IntegerField()
     total_black_high = models.IntegerField()
-    Question_1_payoff = models.IntegerField()
-    Question_2_payoff = models.IntegerField()
-    Question_3_payoff = models.IntegerField()
-    payoff_from_assets = models.IntegerField()
-## Questions 
-    Question_1 = models.IntegerField(
+    Question_1_payoff_pre = models.IntegerField(initial=0)
+    Question_2_payoff_pre = models.IntegerField(initial=0)
+    Question_3_payoff_pre = models.IntegerField(initial=0)
+    Question_1_payoff_post = models.IntegerField(initial=0)
+    Question_2_payoff_post = models.IntegerField(initial=0)
+    Question_3_payoff_post = models.IntegerField(initial=0)
+    survey_avg_pay = models.IntegerField()
+    profit = models.IntegerField()
+    asset_value = models.IntegerField()
+    payoff_from_trading = models.IntegerField()
+    shares = models.IntegerField()
+    average_payoff = models.IntegerField()
+## Questions Pre
+    Question_1_pre = models.IntegerField(min=0, max=100,
         label='''
         Your answer:'''
     )
-
-    Question_2_low = models.IntegerField(
+    Question_1_post = models.IntegerField(min=0, max=100,
         label='''
-        (low)
+        Your answer:'''
+    )
+    Question_2_pre = models.IntegerField(min=100, max=300,
+        label='''
+        Enter a number between 100 and 300.'''
+    )
+    Question_2_post = models.IntegerField(min=100, max=300,
+        label='''
+        Enter a number between 100 and 300.'''
+    )
+    Question_3_pre = models.IntegerField(
+        choices=[1,2,3,4,5,6,7,8],
+        label='''
+         Please choose one of the following.
         '''
     )
-    Question_2_hi = models.IntegerField(label='''
-        (hi):
-        ''')
-
-    Question_3 = models.IntegerField(
+    Question_3_post = models.IntegerField(
         choices=[1,2,3,4,5,6,7,8],
         label='''
          Please choose one of the following.
@@ -278,12 +362,15 @@ class Player(markets_models.Player):
     ### sets the proft for an indivdual player 
     #######################################################################
     def set_profit(self):
-        shares = list(self.settled_assets.values())[0]
+        self.shares = self.settled_assets['A']
+        old_asset_value = 0
         if self.world_state==1:
-            self.profit =  shares*300 - (self.subsession.config.cash_endowment+self.subsession.config.asset_endowment*300 - self.settled_cash)
+            self.asset_value = self.shares*300
+            self.profit = self.asset_value + self.settled_cash
              ## bad state
         else:
-           self.profit =  shares*100 - (self.subsession.config.cash_endowment+self.subsession.config.asset_endowment*100 - self.settled_cash) 
+            self.asset_value = self.shares*100
+            self.profit =  self.asset_value + self.settled_cash
     #######################################################################
     ### sets the proft for an indivdual player 
     #######################################################################
@@ -293,39 +380,70 @@ class Player(markets_models.Player):
     ### calculates payoff
     #######################################################################
     def set_total_payoff(self):
-        ###################question 1#######################################
-        p_n = random.randint(0,99)
-        n_asset_binomail = np.random.binomial(1, p_n/100)
-        n_asset_value = n_asset_binomail*200 +100
-        if self.Question_1>p_n:
-            self.Question_1_payoff = self.world_state*200 +100
+        ###################question 1 post#####################################
+        p_n_pre = random.randint(0,99)
+        n_asset_binomail_pre = np.random.binomial(1, p_n_pre/100)
+        n_asset_value_pre = n_asset_binomail_pre*200 +100
+        #######################################################################
+        p_n_post = random.randint(0,99)
+        n_asset_binomail_post = np.random.binomial(1, p_n_post/100)
+        n_asset_value_post = n_asset_binomail_post*200 +100
+         ################question 1 post#########################################
+        if self.Question_1_post>p_n_post:
+            self.Question_1_payoff_post = self.world_state*200 +100
         else:
-            self.Question_1_payoff = n_asset_value
-        #########################Question 2#################################
+            self.Question_1_payoff_post = n_asset_value_post
 
-        L = self.Question_2_low
-        U = self.Question_2_hi
-
-        if self.subsession.config.env==1:
-            BU = self.BU_env_b(self.total_black_low, self.total_black_high)
+        ################question 1 pre#########################################
+        if self.Question_1_pre>p_n_pre:
+            self.Question_1_payoff_pre = self.world_state*200 +100
         else:
-            if self.signal_nature==1:
-                BU = self.BU_hi(self.total_black, self.total_white)
-             ## bad state
-            else:
-                BU = self.BU_low(self.total_black, self.total_white)
-
-        if BU>(L/100) and BU<(U/100):
-            self.Question_2_payoff= (100-(U-L))
+            self.Question_1_payoff_pre = n_asset_value_pre
+        ################### ### question 2 post###################################
+        p_n = random.randint(100,300)
+        if self.Question_2_post>p_n:
+            self.Question_2_payoff_post = self.world_state*200 +100
         else:
-            self.Question_2_payoff= 0
-       ################### ### question 3###################################
-
+            self.Question_2_payoff_post = p_n
+        ################### ### question 2 pre###################################
+        p_n = random.randint(100,300)
+        if self.Question_2_pre>p_n:
+            self.Question_2_payoff_pre = self.world_state*200 +100
+        else:
+            self.Question_2_payoff_pre = p_n
+        ################### ### question 3 pre###################################
         ##C correct ranking
         C = self.ranking
         ##R is the reported belief
-        R = self.Question_3
-        self.Question_3_payoff= (int) (100 - (math.pow((C - R),2)))
-
+        R = self.Question_3_pre
+        self.Question_3_payoff_pre= (int) (100 - (math.pow((C - R),2)))
+        ################### ### question 3 post###################################
+        ##C correct ranking
+        C = self.ranking
+        ##R is the reported belief
+        R = self.Question_3_post
+        self.Question_3_payoff_post= (int) (100 - (math.pow((C - R),2)))
+        ### set to zero if did not answer survye questions
+        if self.Question_1_pre==0:
+            self.Question_1_payoff_pre = 0
+        if self.Question_1_post==0:
+            self.Question_1_payoff_post = 0
+        if self.Question_2_pre==0:
+            self.Question_2_payoff_pre = 0
+        if self.Question_2_post==0:
+            self.Question_2_payoff_post = 0
+        if self.Question_3_pre==0:
+            self.Question_3_payoff_pre = 0
+        if self.Question_3_post==0:
+            self.Question_3_payoff_post = 0
         ## set total payoff ###############################
-        self.total_payoff = (int)((self.Question_1_payoff + self.Question_2_payoff +self.Question_3_payoff)/3) + self.profit
+        self.payoff_from_trading = self.profit
+
+        self.survey_avg_pay  = (int)((self.Question_1_payoff_pre + self.Question_2_payoff_pre + self.Question_3_payoff_pre + self.Question_1_payoff_post+self.Question_2_post+ self.Question_3_payoff_post)/6) 
+        
+        self.total_payoff = self.survey_avg_pay + self.payoff_from_trading
+
+        ## sets payoff to best payoff per round 
+        conversion_rate = .0017
+        if self.subsession.round_number > 2:
+                self.payoff = self.payoff + (self.total_payoff * conversion_rate)

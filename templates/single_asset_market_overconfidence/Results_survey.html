@@ -1,0 +1,85 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Survey Results 
+{% endblock %}
+
+{% block styles %}
+<style>
+.results-container{
+    display: flex;
+}
+.survey {
+	flex: 80%;
+}
+table{
+	margin-left: auto;
+  	margin-right: auto;
+}
+th, td{
+	padding: 15px;
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<div class = "results-container">
+	<div class="survey">
+				<table>
+						<tr>
+								<td class = "text-header">
+									Pre-Survey Payoffs
+								</td>
+								<td class = "text-header">
+									Post-Survey Payoffs
+								</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 1: {{Question_1_pay_pre}}
+							</td>
+							<td>
+								Question 1: {{Question_1_pay_post}}
+							</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 2: {{Question_2_pay_pre}}
+							</td>
+							<td>
+								Question 2: {{Question_2_pay_post}}
+							</td>
+						</tr>
+						<tr class = "text-results">
+							<td>
+								Question 3: {{Question_3_pay_pre}}
+							</td>
+							<td>
+								Question 3: {{Question_3_pay_post}}
+							</td>
+						</tr>
+				</table>
+				<div class = "text-header">
+					<br>
+					The average payoff from survey questions:
+					</br>
+				</div>
+				<div class = "text-results">
+					<br>
+					(1/6)({{Question_1_pay_pre}} + {{Question_2_pay_pre}} + {{Question_3_pay_pre}} + {{Question_1_pay_post}} + {{Question_2_pay_post}} + {{Question_3_pay_post}}) = {{payoff_from_survey}}
+					</br>
+				</div>
+			</div>
+		</div>
+{% next_button %}
+{% endblock %}

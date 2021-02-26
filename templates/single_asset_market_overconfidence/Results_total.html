@@ -1,0 +1,53 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{% block title %}
+Total Payoff
+{% endblock %}
+{% block styles %}
+<style>
+.results-container{
+    display: flex;
+}
+.total_pay {
+	flex: 80%;
+}
+table{
+	margin-left: auto;
+  	margin-right: auto;
+}
+th, td{
+	padding: 15px;
+}
+.text-results {
+	text-align: center;
+	font-size: 90%;
+	font-family: verdana;
+}
+.text-header {
+	text-align: center;
+	font-size: 110%;
+	font-family: verdana;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<div class = "results-container">
+	<div class="total_pay">
+		<div class = "text-header">
+			<br>
+					Total payoff for this period: {{total_pay}}
+			</br>
+		</div>
+		<div class = "text-results">
+				<br>
+				Total payoff for this period = payoff from trading + average of payoffs from survey
+				</br>
+				<br>
+				{{total_pay}} = {{payoff_from_trading}} + {{payoff_from_survey}}
+				</br>
+		</div>
+	</div>
+</div>
+{% next_button %}
+{% endblock %}

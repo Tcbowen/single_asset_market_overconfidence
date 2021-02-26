@@ -31,7 +31,6 @@ class Overconfidence_Output_Gen(BaseCSVMarketOutputGenerator):
     			'Question_3_pre', 
    				'Question_1_post', 
     			'Question_2_post',
-    			'Question_2_post',
    				'Question_3_post', 
     			]
 
@@ -61,21 +60,15 @@ class Overconfidence_Output_Gen(BaseCSVMarketOutputGenerator):
    				player.Question_1_payoff_post, 
     			player.Question_2_payoff_post,
    				player.Question_3_payoff_post,
-    			player.Question_4_payoff_post, 
     			player.profit, 
-    			player.new_wealth,
-    			player.old_wealth,
     			player.payoff_from_trading,
     			player.shares,
     			player.Question_1_pre,
-    			player.Question_2_low_pre,
-    			player.Question_2_hi_pre, 
+    			player.Question_2_pre,
     			player.Question_3_pre, 
    				player.Question_1_post, 
-    			player.Question_2_low_post,
-    			player.Question_2_hi_post, 
+    			player.Question_2_post,
    				player.Question_3_post,
-    			player.Question_4_post, 
 			]
 
 output_generators = [DefaultJSONMarketOutputGenerator, Overconfidence_Output_Gen]

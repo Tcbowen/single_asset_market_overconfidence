@@ -141,7 +141,7 @@ class Results_sum(Page):
         if self.subsession.round_number==2:
             return 1000
         else:
-            return 20
+            return 10
     def before_next_page(self):
         if self.timeout_happened:
             self.player.save()

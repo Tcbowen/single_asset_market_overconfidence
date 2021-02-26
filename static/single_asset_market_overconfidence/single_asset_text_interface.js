@@ -66,6 +66,7 @@ class SingleAssetTextInterface extends PolymerElement {
                 }
                 colored-order-list, colored-trade-list, event-log {
                     border: 1px solid black;
+                    background-color: #f0f6ff
                 }
                 .order-info-header {
                     text-align: center;
